@@ -1,4 +1,4 @@
-import { Soap, SoapData, SoapType } from "./Content/Soap.svelte.ts";
+import { Soap, SoapData, SoapType } from "./Soap/Soap.svelte.ts";
 import { Update } from "./Game.svelte.ts";
 import { SaveSystem, type Saveable } from "./Saves.ts";
 import { Decimal } from "./Shared/BreakInfinity/Decimal.svelte";

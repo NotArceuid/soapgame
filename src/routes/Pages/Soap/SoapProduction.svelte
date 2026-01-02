@@ -1,5 +1,5 @@
 <script>
-	import { SoapType } from "../../../Game/Content/Soap.svelte.ts";
+	import { SoapType } from "../../../Game/Soap/Soap.svelte.ts";
 	import SoapProducer from "./SoapProducer.svelte";
 </script>
 

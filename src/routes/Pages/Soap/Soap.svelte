@@ -2,7 +2,7 @@
 	import SoapSell from "./SoapSell.svelte";
 	import SoapProduction from "./SoapProduction.svelte";
 	import { onMount } from "svelte";
-	import { SoapPages } from "../../../Game/Content/Soap.svelte";
+	import { SoapPages } from "../../../Game/Soap/Soap.svelte";
 	import { PageHandler } from "../Pages";
 	import { Pages } from "../../page.svelte";
 	import SoapUpgrades from "./SoapUpgrades.svelte";

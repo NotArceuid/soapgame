@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Soap } from "../../../Game/Content/Soap.svelte";
+	import type { Soap } from "../../../Game/Soap/Soap.svelte";
 	import { Bulk, Player } from "../../../Game/Player.svelte";
 	import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte";
 
