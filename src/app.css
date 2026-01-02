@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+button {
+  border: 1px solid #000;
+  padding: .3rem 1rem .3rem;
+}
+
+button:hover {
+  background-color: #eee;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+select:hover {
+  cursor:pointer;
+}

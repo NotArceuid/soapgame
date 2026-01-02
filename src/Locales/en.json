@@ -1,0 +1,10 @@
+{
+  "ui": {},
+  "stats": {
+    "money": {
+      "title": "Money",
+      "short": "$",
+      "description": "Money"
+    }
+  }
+}
