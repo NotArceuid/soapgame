@@ -13,6 +13,10 @@
 		currUpgrade = upgrade;
 	}
 
+	let canBuy = $derived(
+		currUpgrade?.[1]?.Requirements?.every((t) => t[1]()) ? "" : "bg-gray-200",
+	);
+
 	let amount = $state(1);
 	$effect(() => {
 		if (!currUpgrade) return;
@@ -45,7 +49,7 @@
 	<div class="flex flex-wrap overflow-scroll">
 		{#each UpgradesData as upgrade}
 			<button
-				class="{currUpgrade?.[0] == upgrade[0] ? 'bg-gray-100' : ''} "
+				class="{currUpgrade?.[0] == upgrade[0] ? 'bg-gray-200' : ''} "
 				onclick={() => hoverUpgrade(upgrade)}
 				>{upgrade[1].name} ({!count ? 0 : count}/{upgrade[1].maxCount})</button
 			>
@@ -59,7 +63,7 @@
 				({!count ? 0 : count}/{currUpgrade[1].maxCount})
 			</h1>
 			<h1 class="mb-2">{currUpgrade[1].description()}</h1>
-			<button>
+			<button class={canBuy}>
 				<div>
 					{#each currUpgrade[1].Requirements as requirements}
 						<div>{requirements[0]()}</div>
