@@ -2,12 +2,15 @@ import { Soap, SoapData, SoapType } from "./Soap/Soap.svelte.ts";
 import { Update } from "./Game.svelte.ts";
 import { SaveSystem, type Saveable } from "./Saves.ts";
 import { Decimal } from "./Shared/BreakInfinity/Decimal.svelte";
+import { UpgradesData, UpgradesKey } from "./Soap/Upgrades.svelte.ts";
+import { log } from "console";
 
 interface IPlayer {
   Name: string;
   Money: Decimal;
   Soaps: Map<SoapType, Soap>;
   Bulk: Bulk;
+  SoapUpgrades: Map<UpgradesKey, number>
 }
 
 class PlayerClass implements Saveable {
@@ -16,10 +19,18 @@ class PlayerClass implements Saveable {
     Money: new Decimal(0),
     Soaps: new Map<SoapType, Soap>(),
     Bulk: Bulk.One,
+    SoapUpgrades: new Map(),
   });
 
   constructor() {
     this._player.Soaps.set(SoapType.Red, new Soap(SoapData[0]))
+    Object.values(UpgradesKey).forEach((val) => {
+      if (typeof val === 'number')
+        return;
+
+      this._player.SoapUpgrades.set(val as unknown as UpgradesKey, 0);
+    })
+
     //      Object.values(SoapType)
     //      .forEach((soap, idx) => {
     //        if (typeof soap === 'number')
@@ -27,6 +38,10 @@ class PlayerClass implements Saveable {
     //        const newSoap = new Soap(SoapData[0]);
     //        this._player.Soaps.set(soap as unknown as SoapType, newSoap);
     //      })
+  }
+
+  get SoapUpgrades() {
+    return this._player.SoapUpgrades;
   }
 
   get Bulk() {

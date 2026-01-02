@@ -36,6 +36,10 @@ export class ExpPolynomial {
     return F(Nupper).sub(F(Mlower));
   }
 
+  /*
+  * @param input: The input value e.g Player.Money
+  * @param level: The level, e.g Upgrade Level 
+  * */
   public BuyMax(input: Decimal, level: number): number {
     const fx = (x: number): Decimal => {
       if (x <= 0) return new Decimal(0);

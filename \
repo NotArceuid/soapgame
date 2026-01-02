@@ -1,0 +1,114 @@
+import { SvelteMap } from "svelte/reactivity";
+import { InvokeableEvent } from "../Shared/Events";
+import { ReactiveText } from "../Shared/ReactiveText.svelte.ts";
+import { Decimal } from "../Shared/BreakInfinity/Decimal.svelte.ts";
+import { ExpPolynomial } from "../Shared/Math.ts";
+
+export const UnlockUpgrades: InvokeableEvent<UpgradesKey> = new InvokeableEvent<UpgradesKey>();
+
+const speedUpgradeCost = new ExpPolynomial(
+  new Decimal(100), new Decimal(1.15));
+
+const qualityUpgradeCost = new ExpPolynomial(
+  new Decimal(100), new Decimal(1.12));
+
+export const UpgradesData: SvelteMap<UpgradesKey, IUpgrades> = new SvelteMap<UpgradesKey, IUpgrades>();
+export enum UpgradesKey { Bulk, MaxBulk, SpeedUpgrade, QualityUpgrade, OCD, TierUp, OrangeSoap, EatRedSoap, Cat }
+UpgradesData.set(UpgradesKey.Bulk, {
+  name: "Grr my fingers hurt!!",
+  description: () => new ReactiveText("Unlocks Bulk"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 1,000"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.MaxBulk, {
+  name: "My fingers still hurt!!",
+  description: () => new ReactiveText("Unlocks Max Buttons in bulk"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 25,000"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.SpeedUpgrade, {
+  name: "It's too slow!!",
+  description: () => new ReactiveText("Improves Producer Speed by 100%"),
+  unlocked: true,
+  maxCount: 700,
+  Requirements: [
+    [
+      () => new ReactiveText(`Cost: ${speedCost.Integrate(speedLevel, speedLevel + 1).toFixed(2)}`),
+      () => currency.gte(speedCost.Integrate(speedLevel, speedLevel + 1)) && speedLevel < 700
+    ]
+  ],
+  ShowCondition: [() => true]
+});
+
+UpgradesData.set(UpgradesKey.QualityUpgrade, {
+  name: "Not rich enough!!",
+  description: () => new ReactiveText("Improves Producer Quality by 100%"),
+  unlocked: true,
+  maxCount: 600,
+  Requirements: [
+    [
+      () => new ReactiveText(`Cost: ${qualityCost.Integrate(qualityLevel, qualityLevel + 1).toFixed(2)}`),
+      () => currency.gte(qualityCost.Integrate(qualityLevel, qualityLevel + 1)) && qualityLevel < 600
+    ]
+  ],
+  ShowCondition: [() => true]
+});
+
+UpgradesData.set(UpgradesKey.OCD, {
+  name: "Do you have OCD?",
+  description: () => new ReactiveText("Unlock OCD Buy"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 24999.98"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.TierUp, {
+  name: "Promotions",
+  description: () => new ReactiveText("Unlock Tier up"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 100,000"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.OrangeSoap, {
+  name: "Unlock orange soap",
+  description: () => new ReactiveText("I hope they don't contain any harmful chemicals"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 1.00m"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.EatRedSoap, {
+  name: "Learn to eat red soap",
+  description: () => new ReactiveText("Why would you do that?"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 2.50m"), () => true]],
+  ShowCondition: [() => true]
+})
+
+UpgradesData.set(UpgradesKey.Cat, {
+  name: "Buy a.. cat?",
+  description: () => new ReactiveText("Quite an expensive kitten"),
+  maxCount: 1,
+  Requirements: [[() => new ReactiveText("Cost: 5.00m"), () => true]],
+  ShowCondition: [() => true]
+})
+
+export interface IUpgrades {
+  name: string,
+  description: () => ReactiveText,
+  unlocked?: boolean
+  maxCount: number,
+  /*
+  * @param Requirements needed for the purchasing of upgrades
+  * */
+  Requirements: [() => ReactiveText, () => boolean][];
+  /*
+* @param Requirements needed for the showing of upgrades
+* */
+  ShowCondition: Array<() => boolean>;
+}
