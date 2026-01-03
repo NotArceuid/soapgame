@@ -5,7 +5,7 @@
 
 	let { soap }: { soap: Soap } = $props();
 	let amount = $state(Decimal.ONE);
-	let can = $derived(soap.CanSell(amount) ? "bg-gray-100" : "");
+	let can = $derived(amount <= soap.Amount ? "" : "bg-gray-100");
 
 	$effect(() => {
 		switch (Player.Bulk) {
@@ -39,14 +39,16 @@
 <div class="border m-2 p-2 min-w-5/12">
 	<h1>{soap.Type}</h1>
 	<div class="flex flex-row">
-		<h1>Amount: {soap.Amount}</h1>
+		<h1>Amount: {soap.Amount.format()}</h1>
 		<h1 class="ml-auto">Quality: {soap.Quality}</h1>
 	</div>
 	<div class="flex flex-row">
-		<button class="w-full {can}" onclick={Sell}>Sell {amount}x</button>
+		<button class="w-full {can}" onclick={Sell}>Sell {amount.format()}x</button>
 		<button class="w-full {can} mr-1 ml-1" onclick={Consume}
-			>Eat {amount}x</button
+			>Eat {amount.format()}x</button
 		>
-		<button class="w-full {can}" onclick={Consume}>Offer {amount}x</button>
+		<button class="w-full {can}" onclick={Consume}
+			>Offer {amount.format()}x</button
+		>
 	</div>
 </div>

@@ -11,7 +11,7 @@ export class Soap implements ISoapData {
   public Unlocked: boolean;
 
   constructor(data: ISoapData) {
-    this.Type = data.Type;
+    this.Type = $state(data.Type);
     this.Tier = $state(data.Tier);
     this.Amount = $state(data.Amount);
     this.Quality = $state(data.Quality);

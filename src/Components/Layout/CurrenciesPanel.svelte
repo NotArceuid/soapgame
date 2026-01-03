@@ -20,7 +20,7 @@
 			{#snippet body()}
 				{#each Player.Soap as soap}
 					{#if soap[1].Unlocked}
-						<h1>{soap[0]}: {soap[1].Amount}</h1>
+						<h1>{soap[0]}: {soap[1].Amount.format()}</h1>
 					{/if}
 				{/each}
 			{/snippet}

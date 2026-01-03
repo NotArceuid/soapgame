@@ -5,12 +5,21 @@ export const UnlockAchievement: InvokeableEvent<AchievementKey> = new Invokeable
 export function InvokeAchievement(key: AchievementKey) { UnlockAchievement.invoke(key); }
 
 export const AchievementsData: SvelteMap<AchievementKey, IAchievement> = new SvelteMap<AchievementKey, IAchievement>();
-export enum AchievementKey { Businessman, UpgradeProducer, Bulk, UndiagnosedOCD, JuanZeroZero, Millionaire, RankUp, Cat, UIIAI, FirstQuest, EatSoap, OrangeSoap, IShowSpeed }
+export enum AchievementKey {
+  Businessman,
+  UpgradeProducer,
+  Bulk,
+  BrokeLol,
+  JuanZeroZero,
+  UndiagnosedOCD,
+  Millionaire, RankUp, Cat, UIIAI, FirstQuest, EatSoap, OrangeSoap, IShowSpeed
+}
 AchievementsData.set(AchievementKey.Businessman, { name: "Businessman", description: "Sell soap for the first time." })
 AchievementsData.set(AchievementKey.UpgradeProducer, { name: "Upgrades!!", description: "Upgrade the producer once" })
-AchievementsData.set(AchievementKey.JuanZeroZero, { name: "💯", description: "100+" })
-AchievementsData.set(AchievementKey.UndiagnosedOCD, { name: "Undiagnosed OCD", description: "Lol sike" })
 AchievementsData.set(AchievementKey.Bulk, { name: "Broken mouse convention", description: "Unlock Bulk" })
+AchievementsData.set(AchievementKey.BrokeLol, { name: "Broke Lol", description: "Sell 0 soap (totally not a bug)" })
+AchievementsData.set(AchievementKey.JuanZeroZero, { name: "💯", description: "100+" })
+AchievementsData.set(AchievementKey.UndiagnosedOCD, { name: "Undiagnosed OCD", description: "j3b4it3d" })
 AchievementsData.set(AchievementKey.Millionaire, { name: "Millionaire", description: "That's 1 with 6 zeroes!" })
 AchievementsData.set(AchievementKey.RankUp, { name: "Rank Up", description: "Rank up a producer for the first time" })
 AchievementsData.set(AchievementKey.Cat, { name: "Cat", description: "Your worst nightmare" })
