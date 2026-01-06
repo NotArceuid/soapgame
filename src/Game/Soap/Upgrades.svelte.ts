@@ -136,28 +136,28 @@ class EatRedSoapUpgrade extends BaseUpgrade {
   name = "Learn to eat red soap";
   description = () => new ReactiveText("Why would you do that?");
   maxCount = 1;
-  Requirements = [() => new ReactiveText("Cost: 2.50m"), () => Player.Money.gt(2500000)] as [() => ReactiveText, () => boolean];
+  Requirements = [() => new ReactiveText(new Decimal(2_500_000).format()), () => Player.Money.gt(2500000)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
 class OrangeSoapUpgrade extends BaseUpgrade {
   name = "Unlock orange soap";
   description = () => new ReactiveText("I hope they don't contain any harmful chemicals");
   maxCount = 1;
-  Requirements = [() => new ReactiveText("Cost: 1.00m"), () => Player.Money.gt(1000000)] as [() => ReactiveText, () => boolean];
+  Requirements = [() => new ReactiveText(new Decimal(1_000_000).format()), () => Player.Money.gt(1000000)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
 class UnlockFoundry extends BaseUpgrade {
   name = "Unlock Foundry";
   description = () => new ReactiveText("The last push before cat prestige >:)");
   maxCount = 1;
-  Requirements = [() => new ReactiveText("Cost: 1b"), () => Player.Money.gt("1e12")] as [() => ReactiveText, () => boolean];
+  Requirements = [() => new ReactiveText(new Decimal("1e+9").format()), () => Player.Money.gt("1e9")] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
 class CatUpgrade extends BaseUpgrade {
   name = "Buy a.. cat?";
   description = () => new ReactiveText("Quite an expensive kitten");
   maxCount = 1;
-  Requirements = [() => new ReactiveText("Cost: 5.00m"), () => Player.Money.gt("5e6")] as [() => ReactiveText, () => boolean];
+  Requirements = [() => new ReactiveText(new Decimal("25e+18").format()), () => Player.Money.gt("25e+18")] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
 
