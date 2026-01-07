@@ -14,6 +14,7 @@
 	let soap = $derived(Soaps.get(type)!);
 	let width = $derived(producer.Progress.div(producer.MaxProgress).mul(100));
 	let rankUpUnlocked = $state(false);
+  let decelerateUnlocked = $state(false)
 
 	const speedCostAmt = $derived(
 		Math.min(
@@ -39,7 +40,6 @@
 			? "bg-gray-100 hover:cursor-default"
 			: "hover:cursor-pointer",
 	);
-
 	let canRankUp = $derived(
 		producer.Amount.lt(producer.RankUpReq)
 			? "bg-gray-100 hover:cursor-default"
@@ -49,6 +49,7 @@
 	let eatenUnlocked = $state(false);
 	$effect(() => {
 		if (producer.EatAmount.gt(0)) eatenUnlocked = true;
+    if (producer.Speed.gt(30)) decelerateUnlocked = true;
 	});
 
 	Update.add(() => {
@@ -59,6 +60,7 @@
 
 	interface SoapProducerSave {
 		eatenUnlocked: boolean;
+    decelerateUnlocked: boolean;
 	}
 
 	// svelte-ignore state_referenced_locally
@@ -67,12 +69,14 @@
 	SaveSystem.SaveCallback<SoapProducerSave>(saveKey, () => {
 		return {
 			eatenUnlocked: eatenUnlocked,
+      decelerateUnlocked: decelerateUnlocked,
 		};
 	});
 
 	// svelte-ignore state_referenced_locally
 	SaveSystem.LoadCallback<SoapProducerSave>(saveKey, (data) => {
 		eatenUnlocked = data.eatenUnlocked;
+    decelerateUnlocked = data.decelerateUnlocked;
 	});
 </script>
 
@@ -119,7 +123,7 @@
 									.format()}
 							</div></button
 						>
-						{#if rankUpUnlocked || DevHacks.skipUnlock}
+						{#if decelerateUnlocked || DevHacks.skipUnlock}
 							<button
 								onclick={producer.Decelerate}
 								class=" mr-1 mt-1 {canRankUp}  "

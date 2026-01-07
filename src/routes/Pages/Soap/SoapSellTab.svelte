@@ -36,6 +36,7 @@
 		2500 - 250 * UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count,
 	);
 
+  let sellBonus = $derived(UpgradesData.get(UpgradesKey.RedSoapAutoSellBonus)!.count)
 	Update.add(() => {
 		if (UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count == 0) return;
 
@@ -43,7 +44,7 @@
 			counter++;
 		}
 		if (counter >= amt) {
-			soap.Sell(soap.Amount.div(1));
+			soap.Sell(soap.Amount.div(100 - sellBonus));
 			counter = 0;
 		}
 	});
