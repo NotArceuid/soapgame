@@ -1,60 +1,60 @@
 {
   "player_data": {
     "Name": "Player",
-    "Money": "0"
+    "Money": "110559.746962267"
   },
   "soap": {
-    "upgradesUnlocked": false,
+    "upgradesUnlocked": true,
     "foundryUnlocked": false
   },
   "upgrades": [
     {
-      "upgradesKey": 0,
-      "count": 0,
+      "key": 0,
+      "count": 1,
       "unlocked": false
     },
     {
-      "upgradesKey": 1,
-      "count": 0,
+      "key": 1,
+      "count": 15,
       "unlocked": true
     },
     {
-      "upgradesKey": 2,
-      "count": 0,
+      "key": 2,
+      "count": 24,
       "unlocked": true
     },
     {
-      "upgradesKey": 3,
+      "key": 3,
+      "count": 9,
+      "unlocked": false
+    },
+    {
+      "key": 4,
+      "count": 16,
+      "unlocked": false
+    },
+    {
+      "key": 5,
+      "count": 3,
+      "unlocked": false
+    },
+    {
+      "key": 6,
+      "count": 3,
+      "unlocked": false
+    },
+    {
+      "key": 7,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 4,
+      "key": 8,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 5,
-      "count": 0,
-      "unlocked": false
-    },
-    {
-      "upgradesKey": 6,
-      "count": 0,
-      "unlocked": false
-    },
-    {
-      "upgradesKey": 7,
-      "count": 0,
-      "unlocked": false
-    },
-    {
-      "upgradesKey": 8,
-      "count": 0,
-      "unlocked": false
-    },
-    {
-      "upgradesKey": 9,
+      "key": 9,
       "count": 0,
       "unlocked": false
     }
@@ -74,14 +74,14 @@
     ]
   },
   "Red Soap producer": {
-    "eatenUnlocked": false,
-    "decelerateUnlocked": false
+    "eaten": false,
+    "decelerate": true
   },
-  "Red Soap": {
-    "SpeedCount": 0,
-    "QualityCount": 0,
-    "Unlocked": true,
-    "Tier": 0,
-    "DecelerateCount": 0
+  "red soap": {
+    "speedcnt": 48,
+    "qualitycnt": 40,
+    "unlocked": true,
+    "tier": 0,
+    "decelerate": 0
   }
 }

@@ -1,7 +1,7 @@
 {
   "player_data": {
     "Name": "Player",
-    "Money": "0"
+    "Money": "50000"
   },
   "soap": {
     "upgradesUnlocked": false,
@@ -10,37 +10,37 @@
   "upgrades": [
     {
       "key": 0,
-      "count": 0,
+      "count": 1,
       "unlocked": false
     },
     {
       "key": 1,
-      "count": 0,
+      "count": 6,
       "unlocked": true
     },
     {
       "key": 2,
-      "count": 0,
+      "count": 12,
       "unlocked": true
     },
     {
       "key": 3,
-      "count": 0,
+      "count": 9,
       "unlocked": false
     },
     {
       "key": 4,
-      "count": 0,
+      "count": 7,
       "unlocked": false
     },
     {
       "key": 5,
-      "count": 0,
+      "count": 3,
       "unlocked": false
     },
     {
       "key": 6,
-      "count": 0,
+      "count": 1,
       "unlocked": false
     },
     {

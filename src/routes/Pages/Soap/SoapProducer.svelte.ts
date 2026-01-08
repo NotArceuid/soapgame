@@ -5,6 +5,7 @@ import { ExpPolynomial } from "../../../Game/Shared/Math";
 import { Multipliers } from "../../../Game/Shared/Multipliers";
 import { SaveSystem } from "../../../Game/Saves";
 import { UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
+import { log } from "console";
 
 export class SoapProducer {
   public SoapType: SoapType;
@@ -60,7 +61,7 @@ export class SoapProducer {
     let amt = Multipliers.QualityMultiplier.Get()
       .mul(1 + (this.QualityCount * 1.0) * Math.pow(2, Math.floor(this.QualityCount / 25))).div(3) // Multi from upgrade
       .mul(UpgradesData.get(UpgradesKey.QualityUpgrade)!.count + 1)
-      .mul(this.DecelerateCount !== 0 ? this.DecelerateCount * 1.25 : 1)
+      .pow(this.DecelerateCount !== 0 ? 1 + this.DecelerateCount / 2.25 : 1)
       .mul(this.Tier !== 0 ? this.Tier * 7.5 : 1) // Multi from tier
     return amt;
   }
@@ -79,11 +80,11 @@ export class SoapProducer {
   }
 
   get DecelerateReq() {
-    return new Decimal(1000).mul(new Decimal(10).pow(this.DecelerateCount));
+    return new Decimal(1250).mul(new Decimal(2).pow(this.DecelerateCount));
   }
 
   get MaxProgress() {
-    return this.Soap.MaxProgress.mul(new Decimal(2).pow(this.DecelerateCount));
+    return this.Soap.MaxProgress.mul(new Decimal(10).pow(this.DecelerateCount));
   }
 
   private get Soap() {
@@ -111,6 +112,7 @@ export class SoapProducer {
 
     // Overexceeded logic here
     if (this.Progress.gte(this.MaxProgress)) {
+      log("hmm")
       this.Progress = Decimal.ZERO;
       this.Soap?.SoapMade(this.Quality);
     }
@@ -139,6 +141,9 @@ export class SoapProducer {
   }
 
   Decelerate() {
+    if (this.Speed.lt(this.DecelerateReq))
+      return;
+
     this.DecelerateCount++;
   }
 

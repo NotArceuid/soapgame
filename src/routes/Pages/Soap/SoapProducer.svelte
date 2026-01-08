@@ -44,19 +44,20 @@
 			? "bg-gray-100 hover:cursor-default"
 			: "hover:cursor-pointer",
 	);
+	let accelerateIndicator = $derived(
+		producer.DecelerateCount > 1 ? "" : "bg-gray-100",
+	);
+	let canDeccelerate = $derived(
+		producer.Speed.gt(producer.DecelerateReq) ? "" : "bg-gray-100",
+	);
 	let canRankUp = $derived(
 		producer.Amount.lt(producer.RankUpReq)
 			? "bg-gray-100 hover:cursor-default"
 			: "hover:cursor-pointer",
 	);
-
 	let amount = $derived(Decimal.min(Player.BulkAmount, soap.Amount));
 	let can = $derived(
 		soap.Amount.gte(amount) && soap.Amount.gt(0) ? "" : "bg-gray-100",
-	);
-
-	let holdUpgradeUnlocked = $derived(
-		UpgradesData.get(UpgradesKey.HoldButtonUpgrade)!.count > 0,
 	);
 
 	function Sell(): void {
@@ -67,7 +68,9 @@
 
 	function Eat(): void {}
 	function Offer(): void {}
-
+	function Accelerate(): void {
+		producer.DecelerateCount = Math.max(producer.DecelerateCount - 1, 0);
+	}
 	let counter = $state(0);
 	let sellBonus = $derived(
 		UpgradesData.get(UpgradesKey.RedSoapAutoSellBonus)!.count,
@@ -84,21 +87,13 @@
 
 		if (UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count == 0) return;
 
-		log(autosellCap);
 		if (counter < autosellCap) {
 			counter++;
 		}
 		if (counter >= autosellCap) {
-			soap.Sell(soap.Amount.div(100 - sellBonus));
+			soap.Sell(soap.Amount.div(101 - sellBonus));
 			counter = 0;
 		}
-	});
-
-	onMount(() => {
-		document.addEventListener("keydown", (ev) => {
-			if (ev.code !== "KeyS" || !holdUpgradeUnlocked) return;
-			Sell();
-		});
 	});
 
 	let eatenUnlocked = $state(false);
@@ -174,8 +169,8 @@
 						>
 						{#if decelerateUnlocked || DevHacks.skipUnlock}
 							<button
-								onclick={producer.Decelerate}
-								class=" mr-1 mt-1 {canRankUp}  "
+								onclick={() => producer.Decelerate()}
+								class=" mr-1 mt-1 {canDeccelerate}"
 								>Decelerate
 								<div>
 									({producer.Speed.format()}/ {producer.DecelerateReq.format()})
@@ -192,7 +187,7 @@
 					</div>
 				</div>
 				<div class="ml-2 pl-2 border-l">
-					<div class="flex flex-col justify-center">
+					<div class="flex flex-col h-full">
 						<h1 class="text-center underline mb-2">Actions</h1>
 						<div class="flex flex-col">
 							<button class="w-full {can}" onclick={Sell}>
@@ -209,6 +204,13 @@
 								<button class="w-full {can}" onclick={Offer}>
 									Offer {amount.format()}x
 								</button>
+							{/if}
+
+							{#if producer.DecelerateCount > 0}
+								<button
+									class="mt-auto {accelerateIndicator}"
+									onclick={Accelerate}>Accelerate</button
+								>
 							{/if}
 						</div>
 					</div>
