@@ -3,10 +3,10 @@ import { Player } from "../../../Game/Player.svelte";
 import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte";
 import { ExpPolynomial } from "../../../Game/Shared/Math";
 import { Multipliers } from "../../../Game/Shared/Multipliers";
-import { SaveSystem, type ISaveable } from "../../../Game/Saves";
+import { SaveSystem } from "../../../Game/Saves";
 import { UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
 
-export class SoapProducer implements SoapProducerProps, ISaveable {
+export class SoapProducer {
   public SoapType: SoapType;
   public SpeedCount: number;
   public QualityCount: number;
@@ -19,7 +19,6 @@ export class SoapProducer implements SoapProducerProps, ISaveable {
 
   constructor(soapType: SoapType) {
     this.SoapType = $state(soapType);
-    this.saveKey = $state(this.SoapType);
     this.Unlocked = $state(true);
     this.Tier = $state(0);
     this.DecelerateCount = $state(0)
@@ -30,27 +29,23 @@ export class SoapProducer implements SoapProducerProps, ISaveable {
     this.SpeedFormula = new ExpPolynomial(new Decimal(7.29), new Decimal(1.15));
     this.QualityFormula = new ExpPolynomial(new Decimal(4.5), new Decimal(1.17));
 
-    SaveSystem.SaveCallback<SoapProducerProps>(this.saveKey, () => this.getSaveData());
-    SaveSystem.LoadCallback<SoapProducerProps>(this.saveKey, (data) => this.loadSaveData(data));
-  }
-
-  saveKey: string;
-  getSaveData(): any {
-    return {
-      SpeedCount: this.SpeedCount,
-      QualityCount: this.QualityCount,
-      Unlocked: this.Unlocked,
-      Tier: this.Tier,
-      DecelerateCount: this.DecelerateCount
-    }
-  }
-
-  loadSaveData(data: SoapProducerProps): void {
-    this.SpeedCount = data.SpeedCount;
-    this.QualityCount = data.QualityCount;
-    this.Unlocked = data.Unlocked;
-    this.Tier = data.Tier;
-    this.DecelerateCount = data.DecelerateCount;
+    let saveKey = this.SoapType.toLowerCase();
+    SaveSystem.SaveCallback<SoapProducerSave>(saveKey, () => {
+      return {
+        speedcnt: this.SpeedCount,
+        qualitycnt: this.QualityCount,
+        unlocked: this.Unlocked,
+        tier: this.Tier,
+        decelerate: this.DecelerateCount
+      }
+    });
+    SaveSystem.LoadCallback<SoapProducerSave>(saveKey, (data) => {
+      this.SpeedCount = data.speedcnt;
+      this.QualityCount = data.qualitycnt;
+      this.Unlocked = data.unlocked;
+      this.Tier = data.tier;
+      this.DecelerateCount = data.decelerate;
+    });
   }
 
   GetSpeedCost(amount: number) {
@@ -160,11 +155,10 @@ export class SoapProducer implements SoapProducerProps, ISaveable {
   }
 }
 
-export interface SoapProducerProps {
-  SoapType: SoapType;
-  SpeedCount: number;
-  QualityCount: number;
-  Tier: number;
-  Unlocked: boolean;
-  DecelerateCount: number;
+export interface SoapProducerSave {
+  speedcnt: number;
+  qualitycnt: number;
+  tier: number;
+  unlocked: boolean;
+  decelerate: number;
 }

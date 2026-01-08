@@ -12,11 +12,27 @@ export const UpgradeBought: InvokeableEvent<UpgradesKey> = new InvokeableEvent<U
 export const UpgradesData: SvelteMap<UpgradesKey, BaseUpgrade> = new SvelteMap<UpgradesKey, BaseUpgrade>();
 
 export enum UpgradesKey {
-  HoldButtonUpgrade, QualityUpgrade, SpeedUpgrade, RedSoapAutoSeller,
-  RedSoapAutoSellBonus, BulkUpgrade, EatRedSoapUpgrade, UnlockFoundry, CatPrestige
+  HoldButtonUpgrade,
+  QualityUpgrade,
+  SpeedUpgrade,
+  RedSoapAutoSeller,
+  RedSoapAutoSellBonus,
+  RedSoapAutoSellCostRed,
+  BulkUpgrade,
+  EatRedSoapUpgrade,
+  UnlockFoundry,
+  CatPrestige
 }
 
 export abstract class BaseUpgrade implements IUpgradesInfo {
+  saveKey: string = "upgrades";
+  getSaveData(): unknown {
+    throw new Error("Method not implemented.");
+  }
+  loadSaveData(data: unknown): void {
+    throw new Error("Method not implemented.");
+  }
+
   buy = () => {
     if (this.count + this.buyAmount > this.maxCount)
       return;
@@ -31,6 +47,7 @@ export abstract class BaseUpgrade implements IUpgradesInfo {
   abstract Requirements: [() => ReactiveText, () => boolean];
   abstract ShowCondition: () => boolean;
   abstract cost: Decimal;
+  effect?: () => ReactiveText;
   count: number = $state(0)
   getMax?: () => number = undefined;
   unlocked: boolean = $state(false);
@@ -103,10 +120,10 @@ class SpeedUpgrade extends BaseUpgrade {
 }
 class RedSoapAutoSellter extends BaseUpgrade {
   name = "Red soap autosell";
-  description = () => new ReactiveText("Unlocks the red soap autoseller, happy now? Each subsequent upgrade decreases the time interval by 0.25s");
+  description = () => new ReactiveText("Unlocks the red soap autosell. Happy now?");
   maxCount = 9;
 
-  private costFormula = new Exponential(new Decimal(705), new Decimal(1.13));
+  private costFormula = new ExpPolynomial(new Decimal(705), new Decimal(1.15));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -120,11 +137,11 @@ class RedSoapAutoSellter extends BaseUpgrade {
   ShowCondition = () => true;
 }
 class RedSoapAutoSellBonus extends BaseUpgrade {
-  name = "Red soap autosell is too slow >:(";
-  description = () => new ReactiveText("Not satisfied yet? This upgrade increases the effect of red soap autoseller by 1% per level");
+  name = "Not enough money :(";
+  description = () => new ReactiveText("Still not satisfied yet? This upgrade increases the effect of red soap autoseller by 1% per level");
   maxCount = 100;
 
-  private costFormula = new Exponential(new Decimal(957), new Decimal(1.10));
+  private costFormula = new Exponential(new Decimal(957), new Decimal(1.5));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -137,7 +154,24 @@ class RedSoapAutoSellBonus extends BaseUpgrade {
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
+class RedSoapAutoSellerCostRed extends BaseUpgrade {
+  name = "I have no soap now";
+  description = () => new ReactiveText("Too greedy buying the previous upgrade? Reduces the cost deduction of red soap autoseller by 1% per level");
+  maxCount = 99;
 
+  private costFormula = new Exponential(new Decimal(5000), new Decimal(2.5));
+  get cost(): Decimal {
+    return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
+  }
+
+  getMax = () => {
+    let amt = this.costFormula.BuyMax(Player.Money, this.count);
+    return amt == -1 ? 1 : amt
+  }
+
+  Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
+  ShowCondition = () => true;
+}
 class BulkUpgrade extends BaseUpgrade {
   name = "I Want More!!!";
   description = () => new ReactiveText("Increases Bulk Limit by 1 per level");
@@ -205,6 +239,7 @@ UpgradesData.set(UpgradesKey.QualityUpgrade, new QualityUpgrade());
 UpgradesData.set(UpgradesKey.SpeedUpgrade, new SpeedUpgrade());
 UpgradesData.set(UpgradesKey.RedSoapAutoSeller, new RedSoapAutoSellter());
 UpgradesData.set(UpgradesKey.RedSoapAutoSellBonus, new RedSoapAutoSellBonus());
+UpgradesData.set(UpgradesKey.RedSoapAutoSellCostRed, new RedSoapAutoSellerCostRed());
 UpgradesData.set(UpgradesKey.BulkUpgrade, new BulkUpgrade());
 UpgradesData.set(UpgradesKey.EatRedSoapUpgrade, new EatRedSoapUpgrade());
 UpgradesData.set(UpgradesKey.UnlockFoundry, new UnlockFoundry());
@@ -216,18 +251,17 @@ SaveSystem.SaveCallback<UpgradeSaveData[]>(saveKey, () => {
   let upgrades: UpgradeSaveData[] = [];
   UpgradesData.forEach((v, k) => {
     upgrades.push({
-      upgradesKey: k,
+      key: k,
       count: v.count,
       unlocked: v.unlocked,
     })
   })
 
   return upgrades
-
 });
 
 interface UpgradeSaveData {
-  upgradesKey: UpgradesKey;
+  key: UpgradesKey;
   count: number;
   unlocked: boolean;
 }
@@ -235,10 +269,11 @@ interface UpgradeSaveData {
 SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
   for (let i = 0; i < data.length; i++) {
     let ele = data[i]
-    let currUpgrade = UpgradesData.get(ele.upgradesKey)!;
+    log(data[i]);
+    let currUpgrade = UpgradesData.get(ele.key)!;
     currUpgrade.count = ele.count;
     currUpgrade.unlocked = ele.unlocked;
 
-    UpgradesData.set(ele.upgradesKey, currUpgrade);
+    UpgradesData.set(ele.key, currUpgrade);
   }
 });

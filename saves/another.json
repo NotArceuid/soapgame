@@ -9,52 +9,52 @@
   },
   "upgrades": [
     {
-      "upgradesKey": 0,
+      "key": 0,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 1,
+      "key": 1,
       "count": 0,
       "unlocked": true
     },
     {
-      "upgradesKey": 2,
+      "key": 2,
       "count": 0,
       "unlocked": true
     },
     {
-      "upgradesKey": 3,
+      "key": 3,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 4,
+      "key": 4,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 5,
+      "key": 5,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 6,
+      "key": 6,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 7,
+      "key": 7,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 8,
+      "key": 8,
       "count": 0,
       "unlocked": false
     },
     {
-      "upgradesKey": 9,
+      "key": 9,
       "count": 0,
       "unlocked": false
     }
@@ -74,14 +74,14 @@
     ]
   },
   "Red Soap producer": {
-    "eatenUnlocked": false,
-    "decelerateUnlocked": false
+    "eaten": false,
+    "decelerate": false
   },
-  "Red Soap": {
-    "SpeedCount": 0,
-    "QualityCount": 0,
-    "Unlocked": true,
-    "Tier": 0,
-    "DecelerateCount": 0
+  "red soap": {
+    "speedcnt": 0,
+    "qualitycnt": 0,
+    "unlocked": true,
+    "tier": 0,
+    "decelerate": 0
   }
 }

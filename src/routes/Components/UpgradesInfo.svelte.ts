@@ -5,6 +5,7 @@ export interface IUpgradesInfo {
   Requirements: [() => ReactiveText, () => boolean];
   count: number;
   maxCount: number;
+  effect?: () => ReactiveText
 
   getMax?: () => number;
   buyAmount: number;

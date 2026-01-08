@@ -1,12 +1,6 @@
 import { dev } from "$app/environment";
 import { InvokeableEvent } from "./Shared/Events";
 
-export interface ISaveable {
-  saveKey: string;
-  getSaveData(): unknown;
-  loadSaveData(data: unknown): void;
-}
-
 export interface SaveEvents {
   onBeforeSave: InvokeableEvent<SaveContext>;
   onAfterSave: InvokeableEvent<SaveResult>;

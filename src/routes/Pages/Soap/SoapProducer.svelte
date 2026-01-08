@@ -12,6 +12,7 @@
 	} from "../../../Game/Soap/Upgrades.svelte.ts";
 	import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte.ts";
 	import { onMount } from "svelte";
+	import { log } from "console";
 
 	let { type }: { type: SoapType } = $props();
 
@@ -68,11 +69,12 @@
 	function Offer(): void {}
 
 	let counter = $state(0);
-	let autosellCap = $derived(
-		2500 - 250 * UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count,
-	);
 	let sellBonus = $derived(
 		UpgradesData.get(UpgradesKey.RedSoapAutoSellBonus)!.count,
+	);
+
+	let autosellCap = $derived(
+		50 - 5 * UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count,
 	);
 
 	Update.add(() => {
@@ -82,6 +84,7 @@
 
 		if (UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count == 0) return;
 
+		log(autosellCap);
 		if (counter < autosellCap) {
 			counter++;
 		}
@@ -105,8 +108,8 @@
 	});
 
 	interface SoapProducerSave {
-		eatenUnlocked: boolean;
-		decelerateUnlocked: boolean;
+		eaten: boolean;
+		decelerate: boolean;
 	}
 
 	// svelte-ignore state_referenced_locally
@@ -114,15 +117,15 @@
 	// svelte-ignore state_referenced_locally
 	SaveSystem.SaveCallback<SoapProducerSave>(saveKey, () => {
 		return {
-			eatenUnlocked: eatenUnlocked,
-			decelerateUnlocked: decelerateUnlocked,
+			eaten: eatenUnlocked,
+			decelerate: decelerateUnlocked,
 		};
 	});
 
 	// svelte-ignore state_referenced_locally
 	SaveSystem.LoadCallback<SoapProducerSave>(saveKey, (data) => {
-		eatenUnlocked = data.eatenUnlocked;
-		decelerateUnlocked = data.decelerateUnlocked;
+		eatenUnlocked = data.eaten;
+		decelerateUnlocked = data.decelerate;
 	});
 </script>
 

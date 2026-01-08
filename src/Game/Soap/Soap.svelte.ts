@@ -163,8 +163,8 @@ export interface SoapSaveData {
   type: SoapType,
   unlocked: boolean,
   amount: Decimal,
-  eatAmount: Decimal,
-  producedAmount: Decimal,
+  eatamt: Decimal,
+  producedamt: Decimal,
 }
 
 export const Soaps = new SvelteMap<SoapType, Soap>();
@@ -177,8 +177,8 @@ SaveSystem.SaveCallback("soap", () => {
   Soaps.forEach((v, k) => {
     soap.push({
       type: k,
-      producedAmount: v.ProducedAmount,
-      eatAmount: v.EatAmount,
+      producedamt: v.ProducedAmount,
+      eatamt: v.EatAmount,
       unlocked: v.Unlocked,
       amount: v.Amount,
     })
