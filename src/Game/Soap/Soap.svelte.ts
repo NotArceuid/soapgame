@@ -3,6 +3,7 @@ import { Player } from "../Player.svelte";
 import { Decimal } from "../Shared/BreakInfinity/Decimal.svelte";
 import { SaveSystem } from "../Saves";
 import { ReactiveText } from "../Shared/ReactiveText.svelte";
+import { log } from "console";
 
 export class Soap implements ISoapData {
   public Type: SoapType;
@@ -32,6 +33,7 @@ export class Soap implements ISoapData {
   public Sell(amount: Decimal) {
     let eatMult = Soaps.get(SoapType.Red)?.EatAmount!.div(100).add(Decimal.ONE);
     let mult = eatMult;
+    log(amount.mul(mult!))
     Player.Money = Player.Money.add(amount.mul(mult!));
     this.Amount = this.Amount.minus(amount);
   }

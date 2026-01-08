@@ -3,18 +3,23 @@
 	import { DevHacks, Update } from "../../../Game/Game.svelte";
 	import { Player } from "../../../Game/Player.svelte";
 	import { SoapProducer } from "./SoapProducer.svelte.ts";
-	import SoapSellTab from "./SoapSellTab.svelte";
 	import { CollapsibleCard } from "svelte5-collapsible";
 	import { slide } from "svelte/transition";
 	import { SaveSystem } from "../../../Game/Saves.ts";
+	import {
+		UpgradesData,
+		UpgradesKey,
+	} from "../../../Game/Soap/Upgrades.svelte.ts";
+	import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte.ts";
+	import { onMount } from "svelte";
 
 	let { type }: { type: SoapType } = $props();
-	let producer = $derived(new SoapProducer(type));
 
+	let producer = $derived(new SoapProducer(type));
 	let soap = $derived(Soaps.get(type)!);
 	let width = $derived(producer.Progress.div(producer.MaxProgress).mul(100));
 	let rankUpUnlocked = $state(false);
-  let decelerateUnlocked = $state(false)
+	let decelerateUnlocked = $state(false);
 
 	const speedCostAmt = $derived(
 		Math.min(
@@ -22,14 +27,12 @@
 			producer.SpeedFormula.BuyMax(Player.Money, producer.SpeedCount),
 		),
 	);
-
 	const qualityCostAmt = $derived(
 		Math.min(
 			Player.BulkAmount,
 			producer.QualityFormula.BuyMax(Player.Money, producer.QualityCount),
 		),
 	);
-
 	let qualityCanBuy = $derived(
 		producer.GetQualityCost(qualityCostAmt).gt(Player.Money)
 			? "bg-gray-100 hover:cursor-default"
@@ -46,21 +49,64 @@
 			: "hover:cursor-pointer",
 	);
 
-	let eatenUnlocked = $state(false);
-	$effect(() => {
-		if (producer.EatAmount.gt(0)) eatenUnlocked = true;
-    if (producer.Speed.gt(30)) decelerateUnlocked = true;
-	});
+	let amount = $derived(Decimal.min(Player.BulkAmount, soap.Amount));
+	let can = $derived(
+		soap.Amount.gte(amount) && soap.Amount.gt(0) ? "" : "bg-gray-100",
+	);
+
+	let holdUpgradeUnlocked = $derived(
+		UpgradesData.get(UpgradesKey.HoldButtonUpgrade)!.count > 0,
+	);
+
+	function Sell(): void {
+		if (soap.CanSell(amount)) {
+			soap.Sell(amount);
+		}
+	}
+
+	function Eat(): void {}
+	function Offer(): void {}
+
+	let counter = $state(0);
+	let autosellCap = $derived(
+		2500 - 250 * UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count,
+	);
+	let sellBonus = $derived(
+		UpgradesData.get(UpgradesKey.RedSoapAutoSellBonus)!.count,
+	);
 
 	Update.add(() => {
 		if (producer.Unlocked) {
 			producer.AddProgress();
 		}
+
+		if (UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count == 0) return;
+
+		if (counter < autosellCap) {
+			counter++;
+		}
+		if (counter >= autosellCap) {
+			soap.Sell(soap.Amount.div(100 - sellBonus));
+			counter = 0;
+		}
+	});
+
+	onMount(() => {
+		document.addEventListener("keydown", (ev) => {
+			if (ev.code !== "KeyS" || !holdUpgradeUnlocked) return;
+			Sell();
+		});
+	});
+
+	let eatenUnlocked = $state(false);
+	$effect(() => {
+		if (producer.EatAmount.gt(0)) eatenUnlocked = true;
+		if (producer.Speed.gt(30)) decelerateUnlocked = true;
 	});
 
 	interface SoapProducerSave {
 		eatenUnlocked: boolean;
-    decelerateUnlocked: boolean;
+		decelerateUnlocked: boolean;
 	}
 
 	// svelte-ignore state_referenced_locally
@@ -69,14 +115,14 @@
 	SaveSystem.SaveCallback<SoapProducerSave>(saveKey, () => {
 		return {
 			eatenUnlocked: eatenUnlocked,
-      decelerateUnlocked: decelerateUnlocked,
+			decelerateUnlocked: decelerateUnlocked,
 		};
 	});
 
 	// svelte-ignore state_referenced_locally
 	SaveSystem.LoadCallback<SoapProducerSave>(saveKey, (data) => {
 		eatenUnlocked = data.eatenUnlocked;
-    decelerateUnlocked = data.decelerateUnlocked;
+		decelerateUnlocked = data.decelerateUnlocked;
 	});
 </script>
 
@@ -143,7 +189,26 @@
 					</div>
 				</div>
 				<div class="ml-2 pl-2 border-l">
-					<SoapSellTab soapType={type} />
+					<div class="flex flex-col justify-center">
+						<h1 class="text-center underline mb-2">Actions</h1>
+						<div class="flex flex-col">
+							<button class="w-full {can}" onclick={Sell}>
+								Sell {amount.format()}x
+							</button>
+
+							{#if UpgradesData.get(UpgradesKey.EatRedSoapUpgrade)!.count > 0 || DevHacks.skipUnlock}
+								<button class="w-full {can}" onclick={Eat}>
+									Eat {amount.format()}x
+								</button>
+							{/if}
+
+							{#if UpgradesData.get(UpgradesKey.CatPrestige)!.count > 0 || DevHacks.skipUnlock}
+								<button class="w-full {can}" onclick={Offer}>
+									Offer {amount.format()}x
+								</button>
+							{/if}
+						</div>
+					</div>
 				</div>
 			</div>
 			<CollapsibleCard transition={{ transition: slide }} isOpen={true}>

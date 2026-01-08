@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { log } from "console";
 	import { Player } from "../../Game/Player.svelte.ts";
 	import type { IUpgradesInfo } from "./UpgradesInfo.svelte.ts";
 
@@ -9,6 +10,12 @@
 
 	let amount = $derived.by<number>(() => {
 		if (!upgrade || !upgrade.getMax) return 1;
+		log(
+			Math.min(
+				upgrade.maxCount - upgrade.count,
+				Math.min(upgrade.getMax(), Player.BulkAmount),
+			),
+		);
 		return Math.max(
 			1,
 			Math.min(
@@ -24,6 +31,7 @@
 
 	function buyUpgrades() {
 		if (!upgrade) return;
+		if (upgrade.Requirements.some((req) => !req())) return;
 		upgrade.buy();
 	}
 </script>

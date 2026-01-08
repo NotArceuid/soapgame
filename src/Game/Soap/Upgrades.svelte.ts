@@ -18,10 +18,11 @@ export enum UpgradesKey {
 
 export abstract class BaseUpgrade implements IUpgradesInfo {
   buy = () => {
-    let increment = this.buyAmount + this.count;
-    this.count = Math.min(increment, this.maxCount);
+    if (this.count + this.buyAmount > this.maxCount)
+      return;
 
     Player.Money = Player.Money.minus(this.cost);
+    this.count = this.count + this.buyAmount;
   }
 
   abstract name: string;
@@ -100,13 +101,12 @@ class SpeedUpgrade extends BaseUpgrade {
   ShowCondition = () => true;
 
 }
-
 class RedSoapAutoSellter extends BaseUpgrade {
   name = "Red soap autosell";
-  description = () => new ReactiveText("Unlocks the red soap autoseller, happy now?");
+  description = () => new ReactiveText("Unlocks the red soap autoseller, happy now? Each subsequent upgrade decreases the time interval by 0.25s");
   maxCount = 9;
 
-  private costFormula = new Exponential(new Decimal(750), new Decimal(1.1));
+  private costFormula = new Exponential(new Decimal(705), new Decimal(1.13));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -119,7 +119,6 @@ class RedSoapAutoSellter extends BaseUpgrade {
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
-
 class RedSoapAutoSellBonus extends BaseUpgrade {
   name = "Red soap autosell is too slow >:(";
   description = () => new ReactiveText("Not satisfied yet? This upgrade increases the effect of red soap autoseller by 1% per level");
@@ -132,7 +131,7 @@ class RedSoapAutoSellBonus extends BaseUpgrade {
 
   getMax = () => {
     let amt = this.costFormula.BuyMax(Player.Money, this.count);
-    return amt == -1 ? 1 : amt;
+    return amt == -1 ? 1 : amt
   }
 
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
@@ -202,8 +201,8 @@ class CatUpgrade extends BaseUpgrade {
 }
 
 UpgradesData.set(UpgradesKey.HoldButtonUpgrade, new HoldButtonUpgrade());
-UpgradesData.set(UpgradesKey.SpeedUpgrade, new SpeedUpgrade());
 UpgradesData.set(UpgradesKey.QualityUpgrade, new QualityUpgrade());
+UpgradesData.set(UpgradesKey.SpeedUpgrade, new SpeedUpgrade());
 UpgradesData.set(UpgradesKey.RedSoapAutoSeller, new RedSoapAutoSellter());
 UpgradesData.set(UpgradesKey.RedSoapAutoSellBonus, new RedSoapAutoSellBonus());
 UpgradesData.set(UpgradesKey.BulkUpgrade, new BulkUpgrade());
@@ -234,16 +233,12 @@ interface UpgradeSaveData {
 }
 
 SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
-  log(data.length)
   for (let i = 0; i < data.length; i++) {
     let ele = data[i]
-    log("workds")
     let currUpgrade = UpgradesData.get(ele.upgradesKey)!;
-    log(currUpgrade)
     currUpgrade.count = ele.count;
     currUpgrade.unlocked = ele.unlocked;
 
     UpgradesData.set(ele.upgradesKey, currUpgrade);
-
   }
 });
