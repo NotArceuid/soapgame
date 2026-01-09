@@ -87,7 +87,7 @@ export class SoapProducer {
   }
 
   get MaxProgress() {
-    return this.Soap.MaxProgress.mul(new Decimal(15).pow(this.DecelerateCount));
+    return this.Soap.MaxProgress.mul(new Decimal(100).pow(this.DecelerateCount));
   }
 
   private get Soap() {

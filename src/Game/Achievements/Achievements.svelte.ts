@@ -6,28 +6,31 @@ export function InvokeAchievement(key: AchievementKey) { UnlockAchievement.invok
 
 export const AchievementsData: SvelteMap<AchievementKey, IAchievement> = new SvelteMap<AchievementKey, IAchievement>();
 export enum AchievementKey {
-  Businessman,
-  UpgradeProducer,
-  Bulk,
-  BrokeLol,
-  JuanZeroZero,
-  UndiagnosedOCD,
-  Millionaire, RankUp, Cat, UIIAI, FirstQuest, EatSoap, OrangeSoap, IShowSpeed
+  Soapy, Gooder, Businessman, Automation, OCD, Millionaire, Deccelerate, HighSpeed, Accelerate, Deccelerate2, EatSoap
 }
-AchievementsData.set(AchievementKey.Businessman, { name: "Businessman", description: "Sell soap for the first time." })
-AchievementsData.set(AchievementKey.UpgradeProducer, { name: "Upgrades!!", description: "Upgrade the producer once" })
-AchievementsData.set(AchievementKey.Bulk, { name: "Broken mouse convention", description: "Unlock Bulk" })
-AchievementsData.set(AchievementKey.BrokeLol, { name: "Broke Lol", description: "Sell 0 soap (totally not a bug)" })
-AchievementsData.set(AchievementKey.JuanZeroZero, { name: "💯", description: "100+" })
-AchievementsData.set(AchievementKey.UndiagnosedOCD, { name: "Undiagnosed OCD", description: "j3b4it3d" })
-AchievementsData.set(AchievementKey.Millionaire, { name: "Millionaire", description: "That's 1 with 6 zeroes!" })
-AchievementsData.set(AchievementKey.RankUp, { name: "Rank Up", description: "Rank up a producer for the first time" })
-AchievementsData.set(AchievementKey.Cat, { name: "Cat", description: "Your worst nightmare" })
-AchievementsData.set(AchievementKey.UIIAI, { name: "OIIAI", description: "五一一二一" })
-AchievementsData.set(AchievementKey.FirstQuest, { name: "Questing!!", description: "Finish your first quest" })
-AchievementsData.set(AchievementKey.EatSoap, { name: "Eat Soap", description: "Eat Soap for the first time" })
-AchievementsData.set(AchievementKey.OrangeSoap, { name: "Orange Soap", description: "Unlock Orange soap" })
-AchievementsData.set(AchievementKey.IShowSpeed, { name: "IShowSpeed", description: "Reach 100 speed on any producer" })
+
+AchievementsData.set(AchievementKey.Soapy,
+  { name: "Soapy", description: "Produce your first soap" })
+AchievementsData.set(AchievementKey.Gooder,
+  { name: "Gooder", description: "Upgrade the soap producer once" })
+AchievementsData.set(AchievementKey.Businessman,
+  { name: "Businessman", description: "Sell your first soap" })
+AchievementsData.set(AchievementKey.Automation,
+  { name: "Red soap automation", description: "The factory must grow!!" })
+AchievementsData.set(AchievementKey.OCD,
+  { name: "5 squares", description: "Get more than 25 quality and speed upgrades" })
+AchievementsData.set(AchievementKey.Millionaire,
+  { name: "Millionaire", description: "Get more than 1 million money" })
+AchievementsData.set(AchievementKey.Deccelerate,
+  { name: "Quality over quantity", description: "Deccelerate once" })
+AchievementsData.set(AchievementKey.HighSpeed,
+  { name: "HighSpeed", description: "Overcap your speed while deccelerating" })
+AchievementsData.set(AchievementKey.Accelerate,
+  { name: "Too slow", description: "Accelerate once" })
+AchievementsData.set(AchievementKey.Deccelerate2,
+  { name: "Deccelerate 2", description: "You've passed deccelerate 2, now be prepare for the wall" })
+AchievementsData.set(AchievementKey.EatSoap,
+  { name: "Eat Soap", description: "Why... just why??" })
 
 export interface IAchievement {
   name: string,
