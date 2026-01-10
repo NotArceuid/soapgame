@@ -22,7 +22,7 @@ export abstract class SoapBase implements ISoapData {
   }
 
   public Sell(amount: Decimal, red?: Decimal) {
-    let eatMult = this.EatAmount.gt(0) ? Decimal.log10(this.EatAmount.add(2)) + 1 : 1;
+    let eatMult = this.EatAmount.gt(0) ? (Decimal.log2(this.EatAmount.add(2))) : 1;
     let mult = eatMult;
 
     Player.Money = Player.Money.add(amount.mul(mult!));
@@ -37,7 +37,7 @@ export abstract class SoapBase implements ISoapData {
 
 class RedSoap extends SoapBase {
   EatMessage = () => {
-    return new ReactiveText(`Sell multiplier: ${Math.round(Decimal.log10(this.EatAmount.add(2)) + 1)}x`)
+    return new ReactiveText(`Sell multiplier: ${(Math.round(Decimal.log2(this.EatAmount.add(2))))}x`)
   }
 
   Type = $state(SoapType.Red);
@@ -181,33 +181,41 @@ export interface SoapSaveData {
   producedamt: Decimal,
 }
 
-export const Soaps = new SvelteMap<SoapType, SoapBase>([
-  [SoapType.Red, new RedSoap()]
-])
+export const Soaps: Record<SoapType, SoapBase> = {
+  [SoapType.Red]: new RedSoap(),
+  [SoapType.Orange]: new OrangeSoap(),
+  [SoapType.Yellow]: new YellowSoap(),
+  [SoapType.Green]: new GreenSoap(),
+  [SoapType.Blue]: new BlueSoap(),
+  [SoapType.Indigo]: new IndigoSoap(),
+  [SoapType.Violet]: new VioletSoap(),
+  [SoapType.White]: new WhiteSoap(),
+  [SoapType.Black]: new BlackSoap(),
+  [SoapType.Rainbow]: new RainbowSoap()
+}
 
 SaveSystem.SaveCallback<SoapSaveData[]>("soap", () => {
   let soap: SoapSaveData[] = [];
-  Soaps.forEach((v, k) => {
+  for (const [k, v] of Object.entries(Soaps)) {
     soap.push({
-      type: k,
+      type: SoapType[k as keyof typeof SoapType],
       producedamt: new Decimal(v.ProducedAmount),
       eatamt: v.EatAmount,
       unlocked: v.Unlocked,
       amount: v.Amount,
     })
-  })
+
+  }
 
   return soap;
 })
 
 SaveSystem.LoadCallback<SoapSaveData[]>("soap", (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const soapData = data[i];
-    let soap = Soaps.get(soapData.type)!;
-    soap.ProducedAmount = new Decimal(soapData.producedamt);
-    soap.EatAmount = new Decimal(soapData.eatamt);
-    soap.Unlocked = soapData.unlocked;
-    soap.Amount = new Decimal(soapData.amount);
-    Soaps.set(soapData.type, soap);
+  for (const [k, v] of Object.entries(data)) {
+    let soapIdx = SoapType[k as keyof typeof SoapType];
+    Soaps[soapIdx].ProducedAmount = new Decimal(v.producedamt);
+    Soaps[soapIdx].EatAmount = new Decimal(v.eatamt);
+    Soaps[soapIdx].Unlocked = v.unlocked;
+    Soaps[soapIdx].Amount = new Decimal(v.amount);
   }
 })

@@ -2,7 +2,7 @@
 	import { Soaps, type SoapType } from "../../../Game/Soap/Soap.svelte.ts";
 	import { DevHacks, Update } from "../../../Game/Game.svelte";
 	import { Player } from "../../../Game/Player.svelte";
-	import { SoapProducer } from "./SoapProducer.svelte.ts";
+	import { SoapProducers } from "./SoapProducer.svelte.ts";
 	import { CollapsibleCard } from "svelte5-collapsible";
 	import { slide } from "svelte/transition";
 	import { SaveSystem } from "../../../Game/Saves.ts";
@@ -14,8 +14,8 @@
 	import { log } from "console";
 
 	let { type }: { type: SoapType } = $props();
-	let producer = $derived(new SoapProducer(type));
-	let soap = $derived(Soaps.get(type)!);
+	let producer = $derived(SoapProducers[type]);
+	let soap = $derived(Soaps[type]!);
 	let width = $derived(producer.Progress.div(producer.MaxProgress).mul(100));
 	let decelerateUnlocked = $state(false);
 
@@ -67,7 +67,7 @@
 	}
 	let counter = $state(0);
 	let autosellCap = $derived(
-		30 - 3 * UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count,
+		30 - 3 * UpgradesData[UpgradesKey.RedSoapAutoSeller].count,
 	);
 
 	Update.add(() => {
@@ -75,20 +75,16 @@
 			producer.AddProgress();
 		}
 
-		if (UpgradesData.get(UpgradesKey.RedSoapAutoSeller)!.count == 0) return;
+		if (UpgradesData[UpgradesKey.RedSoapAutoSeller].count == 0) return;
 
 		if (counter < autosellCap) {
 			counter++;
 		}
 		if (counter >= autosellCap) {
-			let sellPercentage = UpgradesData.get(
-				UpgradesKey.RedSoapAutoSellBonus,
-			)!.count + 1
+			let sellPercentage = UpgradesData[UpgradesKey.RedSoapAutoSellBonus].count + 1
 			let sellAmount = soap.Amount.mul(sellPercentage).div(100);
 
-			let reductionPercentage = UpgradesData.get(
-				UpgradesKey.RedSoapAutoSellCostRed,
-			)!.count;
+			let reductionPercentage = UpgradesData[UpgradesKey.RedSoapAutoSellCostRed].count;
 			let reductionAmount = sellAmount.mul(reductionPercentage).div(100);
 
 			soap.Sell(sellAmount, reductionAmount);
@@ -98,7 +94,7 @@
 
 	let eatenUnlocked = $state(false);
 	$effect(() => {
-		if (UpgradesData.get(UpgradesKey.EatRedSoapUpgrade)?.count! > 0) eatenUnlocked = true;
+		if (UpgradesData[UpgradesKey.EatRedSoapUpgrade].count > 0) eatenUnlocked = true;
 		if (producer.Speed.gt(30)) decelerateUnlocked = true;
 	});
 
@@ -194,7 +190,7 @@
 								Sell {amount.format()}x
 							</button>
 
-							{#if UpgradesData.get(UpgradesKey.CatPrestige)!.count > 0 || DevHacks.skipUnlock}
+							{#if UpgradesData[UpgradesKey.CatPrestige].count > 0 || DevHacks.skipUnlock}
 								<button class="w-full {can}" onclick={Offer}>
 									Offer {amount.format()}x
 								</button>

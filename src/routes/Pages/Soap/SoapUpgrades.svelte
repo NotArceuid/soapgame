@@ -11,7 +11,7 @@
 
 <div class="absolute m-2 w-full flex flex-col h-9/12">
 	<div class="flex flex-wrap">
-		{#each UpgradesData as upgrade}
+		{#each Object.entries(UpgradesData) as upgrade}
 			<button
 				class="w-64 h-12 shrink-0 m-2"
 				class:bg-gray-100={currUpgrade?.name == upgrade[1].name}

@@ -60,7 +60,7 @@ export class SoapProducer {
   }
 
   get Quality() {
-    let upgCount = UpgradesData.get(UpgradesKey.QualityUpgrade)!.count;
+    let upgCount = UpgradesData[UpgradesKey.QualityUpgrade].count;
     let amt = Multipliers.QualityMultiplier.Get()
       .mul(1 + this.QualityCount).div(3) // Multi from upgrade
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount) / 25))
@@ -69,7 +69,7 @@ export class SoapProducer {
   }
 
   get Speed() {
-    let upgCount = UpgradesData.get(UpgradesKey.SpeedUpgrade)!.count;
+    let upgCount = UpgradesData[UpgradesKey.SpeedUpgrade].count;
     let amt = Multipliers.SpeedMultiplier.Get()
       .mul(1 + (this.SpeedCount)) // Multi from upgrade 
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount / 25)))
@@ -91,7 +91,7 @@ export class SoapProducer {
   }
 
   private get Soap() {
-    return Soaps.get(this.SoapType)!
+    return Soaps[this.SoapType]!
   }
 
   get Amount() {
@@ -161,7 +161,7 @@ export class SoapProducer {
   }
 
   Eat() {
-    if (this.Soap.ProducedAmount.lt(this.EatReq) || UpgradesData.get(UpgradesKey.EatRedSoapUpgrade)?.count! < 0)
+    if (this.Soap.ProducedAmount.lt(this.EatReq) || UpgradesData[UpgradesKey.EatRedSoapUpgrade].count! < 0)
       return;
 
     this.EatAmount = this.EatAmount.add(this.ProducedAmount);
@@ -187,3 +187,17 @@ export interface SoapProducerSave {
   producedamt: Decimal;
   type: SoapType;
 }
+
+export const SoapProducers: Record<SoapType, SoapProducer> = {
+  [SoapType.Red]: new SoapProducer(SoapType.Red),
+  [SoapType.Orange]: new SoapProducer(SoapType.Orange),
+  [SoapType.Yellow]: new SoapProducer(SoapType.Yellow),
+  [SoapType.Green]: new SoapProducer(SoapType.Green),
+  [SoapType.Blue]: new SoapProducer(SoapType.Blue),
+  [SoapType.Indigo]: new SoapProducer(SoapType.Indigo),
+  [SoapType.Violet]: new SoapProducer(SoapType.Violet),
+  [SoapType.White]: new SoapProducer(SoapType.White),
+  [SoapType.Black]: new SoapProducer(SoapType.Black),
+  [SoapType.Rainbow]: new SoapProducer(SoapType.Rainbow)
+}
+

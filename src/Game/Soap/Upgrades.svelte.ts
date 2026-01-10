@@ -6,9 +6,10 @@ import { Exponential, ExpPolynomial } from "../Shared/Math.ts";
 import { Player } from "../Player.svelte.ts";
 import { SaveSystem } from "../Saves.ts";
 import type { IUpgradesInfo } from "../../routes/Components/UpgradesInfo.svelte.ts";
+import { SoapType } from "./Soap.svelte.ts";
+import { SoapProducers } from "../../routes/Pages/Soap/SoapProducer.svelte.ts";
 
 export const UpgradeBought: InvokeableEvent<UpgradesKey> = new InvokeableEvent<UpgradesKey>();
-export const UpgradesData: SvelteMap<UpgradesKey, BaseUpgrade> = new SvelteMap<UpgradesKey, BaseUpgrade>();
 
 export enum UpgradesKey {
   RedSoapAutoSeller,
@@ -18,6 +19,7 @@ export enum UpgradesKey {
   RedSoapAutoSellCostRed,
   BulkUpgrade,
   EatRedSoapUpgrade,
+  RedQualityAutobuy,
   UnlockFoundry,
   CatPrestige
 }
@@ -44,7 +46,7 @@ export abstract class BaseUpgrade implements IUpgradesInfo {
   buyAmount: number = $state(1);
 }
 
-class RedSoapAutoSellter extends BaseUpgrade {
+class RedSoapAutoSeller extends BaseUpgrade {
   name = "Mouse brokwn :(";
   description = () => new ReactiveText("Unlocks the red soap autosell. Happy now? Each level decreases the time interval by 5 tick");
   maxCount = 9;
@@ -186,14 +188,14 @@ class BulkUpgrade extends BaseUpgrade {
   get cost(): Decimal {
     let amt = Decimal.ZERO;
     for (let i = 0; i < this.buyAmount; i++) {
-      amt = amt.add(new Decimal(1000).mul(new Decimal(10).pow(UpgradesData.get(UpgradesKey.BulkUpgrade)?.count! + i)))
+      amt = amt.add(new Decimal(1000).mul(new Decimal(10).pow(UpgradesData[UpgradesKey.BulkUpgrade].count! + i)))
     }
     return amt;
   }
   getMax = () => {
     let count = 0;
     let tempCost = new Decimal(1000);
-    let currentCount = UpgradesData.get(UpgradesKey.BulkUpgrade)?.count || 0;
+    let currentCount = UpgradesData[UpgradesKey.BulkUpgrade].count || 0;
 
     while (count < this.maxCount) {
       let nextCost = tempCost.mul(new Decimal(10).pow(currentCount + count));
@@ -223,6 +225,21 @@ class EatRedSoapUpgrade extends BaseUpgrade {
   ShowCondition = () => true;
 }
 
+class RedQualityAutobuy extends BaseUpgrade {
+  name: string = "Red Soap Quality Autobuy"
+  description: () => ReactiveText = () => new ReactiveText("Quality autobuyer for red soap")
+  maxCount: number = 1;
+  Requirements: [() => ReactiveText, () => boolean] = [
+    () => new ReactiveText(this.cost.format()), () => Player.Money.gte(this.cost)
+  ]
+
+  ShowCondition: () => boolean = () => SoapProducers[SoapType.Red].DecelerateCount > 0;
+  get cost() {
+    return new Decimal("1e+15")
+  }
+
+}
+
 class UnlockFoundry extends BaseUpgrade {
   name = "Unlock Foundry";
   description = () => new ReactiveText("The last push before cat prestige >:)");
@@ -245,30 +262,30 @@ class CatUpgrade extends BaseUpgrade {
   ShowCondition = () => true;
 }
 
-UpgradesData.set(UpgradesKey.RedSoapAutoSeller, new RedSoapAutoSellter());
-UpgradesData.set(UpgradesKey.QualityUpgrade, new QualityUpgrade());
-UpgradesData.set(UpgradesKey.SpeedUpgrade, new SpeedUpgrade());
-UpgradesData.set(UpgradesKey.RedSoapAutoSellBonus, new RedSoapAutoSellBonus());
-UpgradesData.set(UpgradesKey.RedSoapAutoSellCostRed, new RedSoapAutoSellerCostRed());
-UpgradesData.set(UpgradesKey.BulkUpgrade, new BulkUpgrade());
-UpgradesData.set(UpgradesKey.EatRedSoapUpgrade, new EatRedSoapUpgrade());
-UpgradesData.set(UpgradesKey.UnlockFoundry, new UnlockFoundry());
-UpgradesData.set(UpgradesKey.CatPrestige, new CatUpgrade());
-
-const saveKey = "upgrades";
+export const UpgradesData: Record<UpgradesKey, BaseUpgrade> = {
+  [UpgradesKey.RedSoapAutoSeller]: new RedSoapAutoSeller(),
+  [UpgradesKey.QualityUpgrade]: new QualityUpgrade(),
+  [UpgradesKey.SpeedUpgrade]: new SpeedUpgrade(),
+  [UpgradesKey.RedSoapAutoSellBonus]: new RedSoapAutoSellBonus(),
+  [UpgradesKey.RedSoapAutoSellCostRed]: new RedSoapAutoSellerCostRed(),
+  [UpgradesKey.BulkUpgrade]: new BulkUpgrade(),
+  [UpgradesKey.EatRedSoapUpgrade]: new EatRedSoapUpgrade(),
+  [UpgradesKey.RedQualityAutobuy]: new RedQualityAutobuy(),
+  [UpgradesKey.UnlockFoundry]: new UnlockFoundry(),
+  [UpgradesKey.CatPrestige]: new CatUpgrade(),
+}; const saveKey = "upgrades";
 
 SaveSystem.SaveCallback<UpgradeSaveData[]>(saveKey, () => {
   let upgrades: UpgradeSaveData[] = [];
-  UpgradesData.forEach((v, k) => {
+  for (const [k, v] of Object.entries(UpgradesData)) {
     upgrades.push({
-      key: k,
+      key: UpgradesKey[k as keyof typeof UpgradesKey],
       count: v.count,
       unlocked: v.unlocked,
     })
-  })
-
-  return upgrades
-});
+  }
+  return upgrades;
+})
 
 interface UpgradeSaveData {
   key: UpgradesKey;
@@ -277,22 +294,18 @@ interface UpgradeSaveData {
 }
 
 SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
-  for (let i = 0; i < data.length; i++) {
-    let ele = data[i]
-    let currUpgrade = UpgradesData.get(ele.key)!;
-    currUpgrade.count = ele.count;
-    currUpgrade.unlocked = ele.unlocked;
-
-    UpgradesData.set(ele.key, currUpgrade);
+  for (const [k, v] of Object.entries(UpgradesData)) {
+    let key = UpgradesKey[k as keyof typeof UpgradesKey]
+    UpgradesData[key].count = data[key].count;
+    UpgradesData[key].unlocked = data[key].unlocked;
   }
 });
 
 export function ResetUpgrades() {
-
-  UpgradesData.forEach((v, k) => {
-    if (k == UpgradesKey.BulkUpgrade || k == UpgradesKey.EatRedSoapUpgrade)
-      return;
-
-    UpgradesData.set(k, v);
-  })
+  let exceptions = [UpgradesKey.BulkUpgrade, UpgradesKey.EatRedSoapUpgrade];
+  for (const [k, v] of Object.entries(UpgradesData)) {
+    if (!exceptions.includes(UpgradesKey[k as keyof typeof UpgradesKey])) {
+      (v as any).count = 0;
+    }
+  }
 }

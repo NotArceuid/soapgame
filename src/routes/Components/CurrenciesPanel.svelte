@@ -4,11 +4,13 @@
 	import { Player } from "../../Game/Player.svelte";
 	import { UpgradesData, UpgradesKey } from "../../Game/Soap/Upgrades.svelte";
 	import { DevHacks } from "../../Game/Game.svelte";
-	import { SoapNameMapping, Soaps } from "../../Game/Soap/Soap.svelte";
+	import { SoapNameMapping, Soaps, SoapType } from "../../Game/Soap/Soap.svelte";
+	import { log } from "console";
 
 	let maxBulkAmt = $derived(
-		UpgradesData.get(UpgradesKey.BulkUpgrade)!.count + 1,
+		UpgradesData[UpgradesKey.BulkUpgrade].count + 1,
 	);
+
 </script>
 
 <div class="border-l w-2/12">
@@ -20,15 +22,15 @@
 				<div class="underline w-full">Soaps</div>
 			{/snippet}
 			{#snippet body()}
-				{#each Soaps as soap}
+				{#each Object.entries(Soaps) as soap}
 					{#if soap[1].Unlocked}
-						<h1>{SoapNameMapping[soap[0]]}: {soap[1].Amount.format()}</h1>
+            <h1>{SoapNameMapping[soap[0] as unknown as SoapType]}: {soap[1].Amount.format()}</h1>
 					{/if}
 				{/each}
 			{/snippet}
 		</CollapsibleCard>
 	</div>
-	{#if UpgradesData.get(UpgradesKey.BulkUpgrade)!.count > 0 || DevHacks.skipUnlock}
+	{#if UpgradesData[UpgradesKey.BulkUpgrade].count > 0 || DevHacks.skipUnlock}
 		<div class="w-full flex flex-col text-center border-t">
 			<h1>Bulk Limit</h1>
 			<div class="relative w-full px-4">
