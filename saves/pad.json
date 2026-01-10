@@ -1,9 +1,9 @@
 {
   "0": {
-    "speedcnt": 189,
-    "qualitycnt": 169,
+    "speedcnt": 0,
+    "qualitycnt": 0,
     "unlocked": true,
-    "decelerate": 2,
+    "decelerate": 0,
     "eatamt": "11020300616029.5",
     "producedamt": "203616781185313",
     "type": 0
@@ -100,32 +100,32 @@
   "upgrades": [
     {
       "key": "0",
-      "count": 9,
+      "count": 0,
       "unlocked": false
     },
     {
       "key": "1",
-      "count": 150,
+      "count": 0,
       "unlocked": true
     },
     {
       "key": "2",
-      "count": 164,
+      "count": 0,
       "unlocked": true
     },
     {
       "key": "3",
-      "count": 100,
+      "count": 0,
       "unlocked": false
     },
     {
       "key": "4",
-      "count": 77,
+      "count": 0,
       "unlocked": false
     },
     {
       "key": "5",
-      "count": 9,
+      "count": 0,
       "unlocked": false
     },
     {
@@ -164,7 +164,7 @@
     ]
   },
   "0 producer": {
-    "eaten": true,
-    "decelerate": true
+    "eaten": false,
+    "decelerate": false
   }
 }

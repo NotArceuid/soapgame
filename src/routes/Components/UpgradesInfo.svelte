@@ -10,12 +10,6 @@
 
 	let amount = $derived.by<number>(() => {
 		if (!upgrade || !upgrade.getMax) return 1;
-		log(
-			Math.min(
-				upgrade.maxCount - upgrade.count,
-				Math.min(upgrade.getMax(), Player.BulkAmount),
-			),
-		);
 		return Math.max(
 			1,
 			Math.min(

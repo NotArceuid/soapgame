@@ -64,7 +64,7 @@ export class SoapProducer {
     let amt = Multipliers.QualityMultiplier.Get()
       .mul(1 + this.QualityCount).div(3) // Multi from upgrade
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount) / 25))
-      .mul(new Decimal(2500).mul(Decimal.pow(5, this.DecelerateCount + 1))) // mult from decel
+      .mul(this.DecelerateCount > 0 ? new Decimal(2500).mul(Decimal.pow(5, this.DecelerateCount + 1)) : 1) // mult from decel
     return amt;
   }
 

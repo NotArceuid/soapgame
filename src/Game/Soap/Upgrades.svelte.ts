@@ -277,13 +277,16 @@ export const UpgradesData: Record<UpgradesKey, BaseUpgrade> = {
 
 SaveSystem.SaveCallback<UpgradeSaveData[]>(saveKey, () => {
   let upgrades: UpgradeSaveData[] = [];
-  for (const [k, v] of Object.entries(UpgradesData)) {
+  for (let i = 0; i < Object.keys(UpgradesData).length; i++) {
+    let k = Object.keys(UpgradesData)[i] as unknown as UpgradesKey;
+    let v = UpgradesData[k];
     upgrades.push({
-      key: UpgradesKey[k as keyof typeof UpgradesKey],
+      key: k,
       count: v.count,
       unlocked: v.unlocked,
     })
   }
+
   return upgrades;
 })
 
@@ -294,10 +297,9 @@ interface UpgradeSaveData {
 }
 
 SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
-  for (const [k, v] of Object.entries(UpgradesData)) {
-    let key = UpgradesKey[k as keyof typeof UpgradesKey]
-    UpgradesData[key].count = data[key].count;
-    UpgradesData[key].unlocked = data[key].unlocked;
+  for (const entry of data) {
+    UpgradesData[entry.key].count = entry.count;
+    UpgradesData[entry.key].unlocked = entry.unlocked;
   }
 });
 
