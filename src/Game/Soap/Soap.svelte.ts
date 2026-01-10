@@ -22,7 +22,7 @@ export abstract class SoapBase implements ISoapData {
   }
 
   public Sell(amount: Decimal, red?: Decimal) {
-    let eatMult = this.EatAmount.gt(0) ? (Decimal.log2(this.EatAmount.add(2))) : 1;
+    let eatMult = this.EatAmount.gt(0) ? (this.EatAmount.div("1e12")) : 1;
     let mult = eatMult;
 
     Player.Money = Player.Money.add(amount.mul(mult!));
@@ -37,7 +37,7 @@ export abstract class SoapBase implements ISoapData {
 
 class RedSoap extends SoapBase {
   EatMessage = () => {
-    return new ReactiveText(`Sell multiplier: ${(Math.round(Decimal.log2(this.EatAmount.add(2))))}x`)
+    return new ReactiveText(`Sell multiplier: ${(this.EatAmount.div("1e12").format())}x`)
   }
 
   Type = $state(SoapType.Red);

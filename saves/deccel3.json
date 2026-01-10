@@ -4,7 +4,7 @@
     "qualitycnt": 179,
     "unlocked": true,
     "decelerate": 3,
-    "eatamt": "11020300616029.5",
+    "eatamt": "111020300616029.5",
     "producedamt": "844679352602365.1",
     "type": 0
   },
@@ -18,47 +18,52 @@
   },
   "upgrades": [
     {
-      "key": 0,
+      "key": "RedSoapAutoSeller",
       "count": 9,
       "unlocked": false
     },
     {
-      "key": 1,
+      "key": "QualityUpgrade",
       "count": 154,
       "unlocked": true
     },
     {
-      "key": 2,
+      "key": "SpeedUpgrade",
       "count": 175,
       "unlocked": true
     },
     {
-      "key": 3,
+      "key": "RedSoapAutoSellBonus",
       "count": 100,
       "unlocked": false
     },
     {
-      "key": 4,
+      "key": "RedSoapAutoSellCostRed",
       "count": 77,
       "unlocked": false
     },
     {
-      "key": 5,
+      "key": "BulkUpgrade",
       "count": 9,
       "unlocked": false
     },
     {
-      "key": 6,
+      "key": "EatRedSoapUpgrade",
       "count": 1,
       "unlocked": false
     },
     {
-      "key": 7,
+      "key": "RedQualityAutobuy",
       "count": 0,
       "unlocked": false
     },
     {
-      "key": 8,
+      "key": "UnlockFoundry",
+      "count": 0,
+      "unlocked": false
+    },
+    {
+      "key": "CatPrestige",
       "count": 0,
       "unlocked": false
     }

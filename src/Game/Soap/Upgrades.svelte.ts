@@ -7,7 +7,9 @@ import { Player } from "../Player.svelte.ts";
 import { SaveSystem } from "../Saves.ts";
 import type { IUpgradesInfo } from "../../routes/Components/UpgradesInfo.svelte.ts";
 import { SoapType } from "./Soap.svelte.ts";
-import { SoapProducers } from "../../routes/Pages/Soap/SoapProducer.svelte.ts";
+import { SoapProducer, SoapProducers } from "../../routes/Pages/Soap/SoapProducer.svelte.ts";
+import { log } from "console";
+import type { TypeParameter } from "typescript";
 
 export const UpgradeBought: InvokeableEvent<UpgradesKey> = new InvokeableEvent<UpgradesKey>();
 
@@ -164,7 +166,7 @@ class RedSoapAutoSellerCostRed extends BaseUpgrade {
   description = () => new ReactiveText("Too greedy buying the previous upgrade? Reduces the cost deduction of red soap autoseller by 1% per level");
   maxCount = 99;
 
-  private costFormula = new ExpPolynomial(new Decimal(5000), new Decimal(1.5));
+  private costFormula = new ExpPolynomial(new Decimal(5000), new Decimal(1.25));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -276,38 +278,47 @@ export const UpgradesData: Record<UpgradesKey, BaseUpgrade> = {
 }; const saveKey = "upgrades";
 
 SaveSystem.SaveCallback<UpgradeSaveData[]>(saveKey, () => {
-  let upgrades: UpgradeSaveData[] = [];
-  for (let i = 0; i < Object.keys(UpgradesData).length; i++) {
-    let k = Object.keys(UpgradesData)[i] as unknown as UpgradesKey;
-    let v = UpgradesData[k];
+  const upgrades: UpgradeSaveData[] = [];
+  Object.values(UpgradesData).forEach((value, index) => {
     upgrades.push({
-      key: k,
-      count: v.count,
-      unlocked: v.unlocked,
-    })
-  }
-
+      key: index,
+      count: value.count,
+      unlocked: value.unlocked,
+    });
+  });
   return upgrades;
-})
+});
 
-interface UpgradeSaveData {
+SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
+  data.forEach((entry, index) => {
+    const key = Object.keys(UpgradesData)[index] as unknown as keyof typeof UpgradesData;
+    UpgradesData[key].count = entry.count;
+    UpgradesData[key].unlocked = entry.unlocked;
+  });
+}); interface UpgradeSaveData {
   key: UpgradesKey;
   count: number;
   unlocked: boolean;
 }
 
-SaveSystem.LoadCallback<UpgradeSaveData[]>(saveKey, (data) => {
-  for (const entry of data) {
-    UpgradesData[entry.key].count = entry.count;
-    UpgradesData[entry.key].unlocked = entry.unlocked;
-  }
-});
-
 export function ResetUpgrades() {
   let exceptions = [UpgradesKey.BulkUpgrade, UpgradesKey.EatRedSoapUpgrade];
+  let record = new Map<number, number>();
+  for (const exp of exceptions) {
+    let index = Object.values(UpgradesKey).indexOf(exp);
+    record.set(index, UpgradesData[exp].count);
+  }
+
   for (const [k, v] of Object.entries(UpgradesData)) {
-    if (!exceptions.includes(UpgradesKey[k as keyof typeof UpgradesKey])) {
-      (v as any).count = 0;
-    }
+    exceptions.forEach((value) => {
+      if (value.toString() !== k) {
+        (v as any).count = 0;
+      }
+    })
+  }
+
+  for (const [k, v] of record) {
+    let keyName = Object.values(UpgradesKey)[k];
+    UpgradesData[keyName as keyof typeof UpgradesData].count = v;
   }
 }
