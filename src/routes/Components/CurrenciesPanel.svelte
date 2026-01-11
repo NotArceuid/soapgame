@@ -4,17 +4,18 @@
 	import { Player } from "../../Game/Player.svelte";
 	import { UpgradesData, UpgradesKey } from "../../Game/Soap/Upgrades.svelte";
 	import { DevHacks } from "../../Game/Game.svelte";
-	import { SoapNameMapping, Soaps, SoapType } from "../../Game/Soap/Soap.svelte";
+	import {
+		SoapNameMapping,
+		Soaps,
+		SoapType,
+	} from "../../Game/Soap/Soap.svelte";
 	import { log } from "console";
 
-	let maxBulkAmt = $derived(
-		UpgradesData[UpgradesKey.BulkUpgrade].count + 1,
-	);
-
+	let maxBulkAmt = $derived(UpgradesData[UpgradesKey.BulkUpgrade].count + 1);
 </script>
 
 <div class="border-l w-2/12">
-	<h1 class="text-center border-b">Currencies</h1>
+	<h1 class="text-center border-b py-2 font-bold">Currencies</h1>
 	<div class="m-3 w-full">
 		<h1>Money: {Player.Money.format()}</h1>
 		<CollapsibleCard transition={{ transition: slide }} isOpen={true}>
@@ -24,7 +25,9 @@
 			{#snippet body()}
 				{#each Object.entries(Soaps) as soap}
 					{#if soap[1].Unlocked}
-            <h1>{SoapNameMapping[soap[0] as unknown as SoapType]}: {soap[1].Amount.format()}</h1>
+						<h1>
+							{SoapNameMapping[soap[0] as unknown as SoapType]}: {soap[1].Amount.format()}
+						</h1>
 					{/if}
 				{/each}
 			{/snippet}

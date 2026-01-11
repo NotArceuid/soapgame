@@ -181,7 +181,7 @@ export interface SoapSaveData {
   producedamt: Decimal,
 }
 
-export const Soaps: Record<SoapType, SoapBase> = {
+export const Soaps: Record<SoapType, SoapBase> = $state({
   [SoapType.Red]: new RedSoap(),
   [SoapType.Orange]: new OrangeSoap(),
   [SoapType.Yellow]: new YellowSoap(),
@@ -192,7 +192,7 @@ export const Soaps: Record<SoapType, SoapBase> = {
   [SoapType.White]: new WhiteSoap(),
   [SoapType.Black]: new BlackSoap(),
   [SoapType.Rainbow]: new RainbowSoap()
-}
+})
 
 SaveSystem.SaveCallback<SoapSaveData[]>("soap", () => {
   let soap: SoapSaveData[] = [];

@@ -23,7 +23,6 @@
 <style>
 	#navbar {
 		padding-bottom: 0.75rem;
-		margin-bottom: 0.75rem;
 		width: 100%;
 		display: flex;
 		border-bottom: 1px solid #000;

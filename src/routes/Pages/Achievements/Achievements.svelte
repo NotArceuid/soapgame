@@ -6,10 +6,7 @@
 <div class="absolute m-2 overflow-scroll h-full">
 	<div class="flex flex-wrap items-center content-center">
 		{#each Object.entries(AchievementsData) as achievement}
-			<AchievementsCard
-				achievement={achievement[1]}
-				idx={parseInt(achievement[0])}
-			/>
+			<AchievementsCard idx={parseInt(achievement[0])} />
 		{/each}
 	</div>
 </div>

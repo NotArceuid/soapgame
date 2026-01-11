@@ -46,12 +46,12 @@
 			elements[4] as HTMLElement,
 		);
 
-		MainPageHandler.ChangePage(Pages.Settings);
+		MainPageHandler.ChangePage(Pages.Soap);
 	});
 </script>
 
 {#if isLoading}
-	<div class="h-full relative p-6 flex flex-col">
+	<div class="h-full relative m-3 p-3 flex flex-col">
 		<NavBar />
 		<div class="flex flex-rows w-full h-full">
 			<div id="locations" class="w-10/12 relative">
@@ -67,7 +67,7 @@
 		<div class="absolute bottom-5 right-5">
 			<NotificationHandler />
 		</div>
-		<div class="absolute bottom-5 left-5">
+		<div class="bottom-5 left-5 border-t p-2">
 			<div class="pt-auto flex flex-col gap-2">
 				<div class="flex items-center gap-6">
 					<a

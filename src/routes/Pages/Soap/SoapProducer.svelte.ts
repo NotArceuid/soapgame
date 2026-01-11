@@ -6,6 +6,7 @@ import { Multipliers } from "../../../Game/Shared/Multipliers";
 import { SaveSystem } from "../../../Game/Saves";
 import { ResetUpgrades, UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
 import { log } from "console";
+import { AchievementKey, AchievementsData } from "../../../Game/Achievements/Achievements.svelte";
 
 export class SoapProducer {
   public SoapType: SoapType;
@@ -122,12 +123,17 @@ export class SoapProducer {
   }
 
   AddProgress() {
+    if (AchievementsData[AchievementKey.HighSpeed].check(this.Progress, this.MaxProgress)) AchievementsData[AchievementKey.HighSpeed].unlocked = true;
     this.Progress = this.Progress.add(this.Speed);
 
     // Overexceeded logic here
     if (this.Progress.gte(this.MaxProgress)) {
       this.Progress = Decimal.ZERO;
       this.Soap?.SoapMade(this.Quality);
+
+      let qualityDecimal = new Decimal(this.Quality);
+      if (AchievementsData[AchievementKey.Soapy].check(qualityDecimal)) AchievementsData[AchievementKey.Soapy].unlocked = true;
+      if (AchievementsData[AchievementKey.Millionaire].check(qualityDecimal)) AchievementsData[AchievementKey.Millionaire].unlocked = true;
     }
   }
 
@@ -188,7 +194,7 @@ export interface SoapProducerSave {
   type: SoapType;
 }
 
-export const SoapProducers: Record<SoapType, SoapProducer> = {
+export const SoapProducers: Record<SoapType, SoapProducer> = $state({
   [SoapType.Red]: new SoapProducer(SoapType.Red),
   [SoapType.Orange]: new SoapProducer(SoapType.Orange),
   [SoapType.Yellow]: new SoapProducer(SoapType.Yellow),
@@ -199,5 +205,4 @@ export const SoapProducers: Record<SoapType, SoapProducer> = {
   [SoapType.White]: new SoapProducer(SoapType.White),
   [SoapType.Black]: new SoapProducer(SoapType.Black),
   [SoapType.Rainbow]: new SoapProducer(SoapType.Rainbow)
-}
-
+})

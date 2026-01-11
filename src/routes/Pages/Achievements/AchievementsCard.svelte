@@ -1,15 +1,18 @@
 <script lang="ts">
-	import type { IAchievement } from "../../../Game/Achievements/Achievements.svelte";
+	import {
+		AchievementKey,
+		AchievementsData,
+	} from "../../../Game/Achievements/Achievements.svelte";
 
-	let { idx, achievement }: { idx: number; achievement: IAchievement } =
-		$props();
-	let unlocked = $derived(achievement.unlocked ? "bg-green-100/10" : "");
+	let { idx }: { idx: number } = $props();
+	let achievement = $derived(AchievementsData[idx as AchievementKey]);
+	let unlocked = $derived(achievement.unlocked ? "bg-green-200/60" : "");
 </script>
 
 <div class="border {unlocked} m-2 p-2 min-w-xs min-h-24 max-w-xs">
 	<div class="flex flex-row">
-		<h1 class="border-b w-full">{achievement.name}</h1>
-		<h1>#{idx}</h1>
+		<h1 class="border-b w-full font-bold">{achievement.name}</h1>
+		<h1 class="font-semibold">#{idx}</h1>
 	</div>
-	<h1>{achievement.description}</h1>
+	<h1 class="text-sm">{achievement.description}</h1>
 </div>
