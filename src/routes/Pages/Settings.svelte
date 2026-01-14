@@ -3,8 +3,9 @@
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 	import { Player } from "../../Game/Player.svelte.ts";
-	import { formatTime } from "../../Game/Shared/BreakInfinity/Formatter.ts";
+	import { formatter, formatTime, Notation } from "../../Game/Shared/BreakInfinity/Formatter.svelte.ts";
 	import SaveSlot from "./SaveSlot.svelte";
+	import { ColorTheme, Settings } from "./Settings.svelte.ts";
 
 	let saveStatus = $state("");
 	async function SavePlayerData() {
@@ -76,6 +77,30 @@
 	let name = PKG_NAME;
 	// @ts-ignore
 	let version = PKG_VERSION;
+
+  function RotateTheme() {
+    let entries = Object.values(ColorTheme).filter(x => typeof x === 'number').map(x => x as ColorTheme);
+    let idx = entries.findIndex((e) => e == Settings.Theme); 
+    if (idx == -1 || idx >= entries.length -1) 
+      idx = 0;
+    else 
+      idx = idx + 1
+
+    Settings.Theme = entries[idx];
+  }
+
+  function RotateNotation() {
+    let entries = Object.values(Notation).filter(x => typeof x === 'number').map(x => x as Notation);
+    let idx = entries.findIndex((e) => e == Settings.Format); 
+    if (idx == -1 || idx >= entries.length -1) 
+      idx = 0;
+      else 
+      idx = idx + 1
+
+    Settings.Format = entries[idx];
+
+    formatter.Notation = Settings.Format;
+  }
 </script>
 
 <div class="w-full p-2 absolute h-full">
@@ -89,8 +114,8 @@
 		<div class="w-4/12 p-2 space-y-1">
 			<h1 class="text-center font-bold">Settings</h1>
 			<div class="grid grid-cols-2 gap-2">
-				<button class="w-full">Format Type: </button>
-				<button class="w-full">Color Theme:</button>
+				<button onclick={RotateNotation} class="w-full">Format Type: {Notation[Settings.Format]}</button>
+				<button onclick={RotateTheme} class="w-full">Color Theme: {ColorTheme[Settings.Theme]}</button>
 			</div>
 		</div>
 		<div class="w-4/12 p-2 space-y-1">

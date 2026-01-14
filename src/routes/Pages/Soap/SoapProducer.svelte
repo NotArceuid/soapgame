@@ -252,7 +252,7 @@
 				<h1 class="text-center underline mb-2">Actions</h1>
 				<div class="flex flex-col">
 					<ActionButton
-						disabled={soap.Amount.lte(amount) || soap.Amount.lte(0)}
+						disabled={soap.Amount.lte(0)}
 						onclick={() => { soap.Sell(amount) }}
 					>
 						{#snippet content()}

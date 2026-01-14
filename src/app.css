@@ -1,5 +1,16 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  
+}
+
+@layer theme {
+  :root, :host {
+    @variant dark {
+
+    }
+  }
+}
 
 button {
   border: 1px solid #000;
@@ -15,3 +26,5 @@ button:hover {
 select:hover {
   cursor:pointer;
 }
+
+

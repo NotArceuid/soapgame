@@ -16,7 +16,7 @@ import {
   cmp,
 } from "./Math";
 import { getOrAddPooled, tryGetPooled } from "./DecimalPool";
-import { formatter } from "./Formatter";
+import { formatter } from "./Formatter.svelte.ts";
 
 function D(value?: DecimalSource): Decimal {
   if (value instanceof Decimal) {
@@ -182,9 +182,7 @@ export class Decimal {
   //#endregion
 
   public format(): string {
-    return formatter.format(
-      new Decimal({ mantissa: this.mantissa, exponent: this.exponent }),
-    );
+    return formatter.format(this);
   }
 
   //#region clone
