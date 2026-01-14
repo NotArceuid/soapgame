@@ -6,7 +6,6 @@ import { Player } from "../Player.svelte.ts";
 import { SaveSystem } from "../Saves.ts";
 import type { IUpgradesInfo } from "../../routes/Components/UpgradesInfo.svelte.ts";
 import { Soaps, SoapType } from "./Soap.svelte.ts";
-import { SoapProducers } from "../../routes/Pages/Soap/SoapProducer.svelte.ts";
 import { log } from "console";
 import { AchievementKey, UnlockAchievement } from "../Achievements/Achievements.svelte.ts";
 
@@ -461,23 +460,28 @@ interface UpgradeSaveData {
 }
 
 export function ResetUpgrades() {
-  let exceptions = [UpgradesKey.BulkUpgrade, UpgradesKey.EatRedSoapUpgrade, UpgradesKey.RedQualityAutobuy];
-  let record = new Map<number, number>();
-  for (const exp of exceptions) {
-    let index = Object.values(UpgradesKey).indexOf(exp);
-    record.set(index, UpgradesData[exp].count);
-  }
+  const exceptions = [
+    UpgradesKey.RedSpeedAutobuy,
+    UpgradesKey.RedQualityAutobuy,
+    UpgradesKey.BulkUpgrade,
+    UpgradesKey.EatRedSoapUpgrade,
+    UpgradesKey.RedSoapAutoSeller,
+    UpgradesKey.OrangeSoapAutoSeller,
+    UpgradesKey.UnlockOrangeSoap,
+    UpgradesKey.UnlockFoundry,
+    UpgradesKey.CatPrestige,
+  ];
 
-  for (const [k, v] of Object.entries(UpgradesData)) {
-    exceptions.forEach((value) => {
-      if (value.toString() !== k) {
-        (v as any).count = 0;
-      }
-    })
-  }
+  const exceptionCounts = new Map<UpgradesKey, number>();
+  exceptions.forEach(key => {
+    exceptionCounts.set(key, UpgradesData[key].count);
+  });
 
-  for (const [k, v] of record) {
-    let keyName = Object.values(UpgradesKey)[k];
-    UpgradesData[keyName as keyof typeof UpgradesData].count = v;
-  }
+  Object.values(UpgradesData).forEach(upgrade => {
+    upgrade.count = 0;
+  });
+
+  exceptionCounts.forEach((count, key) => {
+    UpgradesData[key].count = count;
+  });
 }

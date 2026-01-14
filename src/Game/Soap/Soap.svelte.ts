@@ -281,7 +281,6 @@ SaveSystem.SaveCallback<SoapSaveData[]>("soap", () => {
     })
   })
 
-  log(soap);
   return soap;
 })
 

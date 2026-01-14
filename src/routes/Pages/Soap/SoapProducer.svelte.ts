@@ -1,7 +1,7 @@
 import { SoapBase, Soaps, SoapType } from "../../../Game/Soap/Soap.svelte";
 import { Player } from "../../../Game/Player.svelte";
 import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte";
-import { ExpPolynomial } from "../../../Game/Shared/Math";
+import { Exponential, ExpPolynomial } from "../../../Game/Shared/Math";
 import { Multipliers } from "../../../Game/Shared/Multipliers";
 import { SaveSystem } from "../../../Game/Saves";
 import { ResetUpgrades, UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
@@ -13,7 +13,6 @@ export class SoapProducer {
   public SoapType: SoapType;
   private Soap: SoapBase;
   public Unlocked: boolean = $state(false);
-
   public SpeedCount: number = $state(0)
   public SpeedFormula: ExpPolynomial;
   public QualityCount: number = $state(0);
@@ -48,7 +47,7 @@ export class SoapProducer {
     let amt = Multipliers.QualityMultiplier.Get()
       .mul(1 + this.QualityCount).div(3) // Multi from upgrade
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount) / 25))
-      .mul(this.DecelerateCount > 0 ? new Decimal(2500).mul(Decimal.pow(5, this.DecelerateCount + 1)) : 1) // mult from decel
+      .mul(this.DecelerateCount > 0 ? new Decimal(2500).mul(Decimal.pow(3, this.DecelerateCount + 1)) : 1) // mult from decel
       .mul(ChargeMilestones.get(0)!.formula().add(1))
       .div(this.Soap.QualityDivisor);
 
@@ -143,7 +142,7 @@ export class SoapProducer {
   }
 
   Eat() {
-    if (this.Soap.ProducedAmount.lt(this.EatReq) || UpgradesData[UpgradesKey.EatRedSoapUpgrade].count! < 0)
+    if (this.Soap.ProducedAmount.lt(this.EatReq) || !this.EatSoapUnlocked)
       return;
 
     this.EatAmount = this.EatAmount.add(this.ProducedAmount);
@@ -152,9 +151,12 @@ export class SoapProducer {
     this.SpeedCount = 0;
     this.DecelerateCount = 0;
 
-    this.Amount = Decimal.ZERO;
     Player.Money = Decimal.ZERO;
-    this.ProducedAmount = Decimal.ZERO;
+
+    Soaps[0].Amount = Decimal.ZERO;
+    Soaps[0].ProducedAmount = Decimal.ZERO;
+    Soaps[1].Amount = Decimal.ZERO;
+    Soaps[1].ProducedAmount = Decimal.ZERO;
 
     ResetUpgrades();
   }

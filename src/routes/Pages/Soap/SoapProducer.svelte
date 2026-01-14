@@ -72,6 +72,10 @@
 
 	let amount = $derived(Decimal.min(Player.BulkAmount, soap.Amount));
 
+  $effect(() => {
+    producer.EatSoapUnlocked = canEat;
+  })
+
 	function Sell(): void {
 		if (soap.CanSell(amount)) {
 			soap.Sell(amount);
