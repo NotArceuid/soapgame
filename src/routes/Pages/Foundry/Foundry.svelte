@@ -24,7 +24,6 @@
 					<ActionButton
 						disabled={!generator.Requirements}
 						onclick={() => {
-							generator.buy();
 							currUpgrade = generator;
 						}}
 					>

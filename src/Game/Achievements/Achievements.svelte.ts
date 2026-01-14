@@ -12,7 +12,7 @@ export enum AchievementKey {
   Automation, OCD, Millionaire, Deccelerate,
   HighSpeed, Accelerate, Deccelerate2, EatSoap,
   Deccelerate3, Deccelerate4, Foundry, Charge,
-  Ticket, OrangeSoap, OrangeDeccel1, Cat
+  Ticket, OrangeSoap, OrangeDeccel1, ILY, Maxxed, Cat
 }
 
 export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
@@ -110,6 +110,16 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
   [AchievementKey.OrangeDeccel1]: {
     name: "One orange deccel",
     description: "Deccelerate orange soap once ",
+    check: (...props) => props[0].gt(0)
+  },
+  [AchievementKey.ILY]: {
+    name: "ILY",
+    description: "Get 520 Quality",
+    check: (...props) => props[0].gt(0)
+  },
+  [AchievementKey.Maxxed]: {
+    name: "Maxxed",
+    description: "Max out the speed and quality upgrades.",
     check: (...props) => props[0].gt(0)
   },
   [AchievementKey.Cat]: {

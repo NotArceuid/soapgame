@@ -22,14 +22,6 @@ export abstract class SoapBase implements ISoapData {
   ProducedAmount: Decimal = $state(Decimal.ZERO);
   Unlocked: boolean = $state(false);
 
-  public CanSell(amount: Decimal): boolean {
-    if (amount.lt(0))
-      console.warn("sell amount is negative")
-
-    return this.Amount.gte(amount);
-  }
-
-
   public Sell(amount: Decimal, red?: Decimal) {
     let eatMult = Soaps[SoapType.Red]?.EatAmount!.div("5e12").add(Decimal.ONE);
     let mult = this.SellPrice.mul(eatMult);

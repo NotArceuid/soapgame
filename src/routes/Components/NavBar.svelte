@@ -2,7 +2,7 @@
 	import { MainPageHandler, PagesEnum } from "../Pages/Pages.svelte";
 </script>
 
-<div id="navbar">
+<div id="navbar" class="border-x border-t p-3">
 	<button onclick={() => MainPageHandler.ChangePage(PagesEnum.Soap)}
 		>Soap</button
 	>
@@ -24,7 +24,6 @@
 
 <style>
 	#navbar {
-		padding-bottom: 0.75rem;
 		width: 100%;
 		display: flex;
 		border-bottom: 1px solid #000;

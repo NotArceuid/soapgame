@@ -26,17 +26,21 @@ export enum UpgradesKey {
   RedQualityAutobuy,
   RedSpeedAutobuy,
   UnlockFoundry,
+  OrangeQualityAutoBuy,
+  OrangeSpeedAutoBuy,
+  CatPrestige,
   ChargeSpeedUpgrade,
-  CatPrestige
 }
 
 export abstract class BaseUpgrade implements IUpgradesInfo {
+  abstract key: UpgradesKey;
   buy = () => {
     if (this.count + this.buyAmount > this.maxCount)
       return;
 
     Player.Money = Player.Money.minus(this.cost);
     this.count = this.count + this.buyAmount;
+    UpgradeBought.invoke(this.key);
   }
 
   abstract name: string;
@@ -53,6 +57,7 @@ export abstract class BaseUpgrade implements IUpgradesInfo {
 }
 
 class RedSoapAutoSeller extends BaseUpgrade {
+  key: UpgradesKey = UpgradesKey.RedSoapAutoSeller
   name = "Mouse brokwn :(";
   description = () => new ReactiveText("Unlocks the red soap autosell. Happy now? Each level decreases the time interval by 5 tick");
   maxCount = 9;
@@ -82,8 +87,9 @@ class RedSoapAutoSeller extends BaseUpgrade {
 
 }
 class QualityUpgrade extends BaseUpgrade {
+  key = UpgradesKey.QualityUpgrade;
   name = "Not rich enough!!";
-  description = () => new ReactiveText("Improves Producer Quality by 100%");
+  description = () => new ReactiveText("Improves Producer Quality by 100%, 2x at each 25 levels");
   unlocked = true;
   maxCount = 600;
 
@@ -112,10 +118,11 @@ class QualityUpgrade extends BaseUpgrade {
   ShowCondition = () => true;
 }
 class SpeedUpgrade extends BaseUpgrade {
+  key = UpgradesKey.SpeedUpgrade
   name = "It's too slow!!";
-  description = () => new ReactiveText("Improves Producer Speed by 100%");
+  description = () => new ReactiveText("Improves Producer Speed by 100%, 2x at each 25 levels");
   unlocked = true;
-  maxCount = 700;
+  maxCount = 600;
 
   private speedCost = new ExpPolynomial(new Decimal(365), new Decimal(1.15));
   get cost() {
@@ -144,6 +151,7 @@ class SpeedUpgrade extends BaseUpgrade {
 
 }
 class RedSoapAutoSellBonus extends BaseUpgrade {
+  key = UpgradesKey.RedSoapAutoSellBonus
   name = "Gooder autoseller";
   description = () => new ReactiveText("Still not satisfied yet? This upgrade increases the effect of red soap autoseller by 1% per level");
   maxCount = 99;
@@ -166,8 +174,8 @@ class RedSoapAutoSellBonus extends BaseUpgrade {
   ShowCondition = () => true;
 }
 
-
 class RedSoapAutoSellerCostRed extends BaseUpgrade {
+  key = UpgradesKey.RedAutoSellReduction
   name = "I have no soap now";
   description = () => new ReactiveText("Too greedy buying the previous upgrade? Reduces the cost deduction of red soap autoseller by 1% per level");
   maxCount = 99;
@@ -190,6 +198,7 @@ class RedSoapAutoSellerCostRed extends BaseUpgrade {
 }
 
 class BulkUpgrade extends BaseUpgrade {
+  key = UpgradesKey.BulkUpgrade
   name = "I Want More!!!";
   description = () => new ReactiveText("Increases Bulk Limit by 1 per level");
   maxCount = 9;
@@ -223,6 +232,7 @@ class BulkUpgrade extends BaseUpgrade {
   ShowCondition = () => true;
 }
 class EatRedSoapUpgrade extends BaseUpgrade {
+  key = UpgradesKey.EatRedSoapUpgrade
   name = "Learn to eat red soap";
   description = () => new ReactiveText("Why would you do that?");
   maxCount = 1;
@@ -234,11 +244,12 @@ class EatRedSoapUpgrade extends BaseUpgrade {
 }
 
 class RedQualityAutobuy extends BaseUpgrade {
+  key = UpgradesKey.RedQualityAutobuy
   name: string = "Red Quality Automation"
   description: () => ReactiveText = () => new ReactiveText("Enjoyed the quick boost? Here's an automation for the red soap producer that you've been neglecting")
   maxCount: number = 1;
   Requirements: [() => ReactiveText, () => boolean] = [
-    () => new ReactiveText(this.cost.format(), " + Red Soap Deccelerate 3"), () => Player.Money.gte(this.cost)
+    () => new ReactiveText(this.cost.format()), () => Player.Money.gte(this.cost)
   ]
 
   ShowCondition: () => boolean = () => UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0;
@@ -248,11 +259,12 @@ class RedQualityAutobuy extends BaseUpgrade {
 }
 
 class RedSpeedAutobuy extends BaseUpgrade {
+  key = UpgradesKey.RedSpeedAutobuy;
   name: string = "Red Speed Automation"
   description: () => ReactiveText = () => new ReactiveText("Here's another one")
   maxCount: number = 1;
   Requirements: [() => ReactiveText, () => boolean] = [
-    () => new ReactiveText(this.cost.format(), " + Red Soap Deccelerate 4"), () => Player.Money.gte(this.cost)]
+    () => new ReactiveText(this.cost.format()), () => Player.Money.gte(this.cost)]
 
   ShowCondition: () => boolean = () => UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0;
   get cost() {
@@ -261,22 +273,24 @@ class RedSpeedAutobuy extends BaseUpgrade {
 }
 
 class UnlockFoundry extends BaseUpgrade {
+  key = UpgradesKey.UnlockFoundry
   name = "Unlock Foundry";
   description = () => new ReactiveText("The last push before cat prestige >:)");
   maxCount = 1;
   get cost() {
-    return new Decimal("1e+23");
+    return new Decimal("2.5e+24");
   }
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.gt(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 }
 
 class UnlockOrangeSoap extends BaseUpgrade {
+  key = UpgradesKey.UnlockOrangeSoap
   name = "Unlock orange soap";
   description = () => new ReactiveText("Oranges are orange");
   maxCount = 1;
   get cost() {
-    return new Decimal("1e+17");
+    return new Decimal("1e+18");
   }
   buy: () => void = () => {
     if (this.count + this.buyAmount > this.maxCount)
@@ -294,6 +308,7 @@ class UnlockOrangeSoap extends BaseUpgrade {
 
 
 class OrangeSoapAutoSeller extends BaseUpgrade {
+  key = UpgradesKey.OrangeSoapAutoSeller
   name = "Mouse brokwn (again) :(";
   description = () => new ReactiveText("Unlocks orange soap autosell. I'm pretty sure you're tired at clicking the sell button");
   maxCount = 9;
@@ -324,6 +339,7 @@ class OrangeSoapAutoSeller extends BaseUpgrade {
 }
 
 class OrangeSoapAutoSellBonus extends BaseUpgrade {
+  key = UpgradesKey.OrangeSoapAutoSellBonus
   name = "Goder orange autoseller";
   description = () => new ReactiveText("Same as the red one");
   maxCount = 99;
@@ -348,6 +364,7 @@ class OrangeSoapAutoSellBonus extends BaseUpgrade {
 
 
 class OrangeSoapAutoSellReduction extends BaseUpgrade {
+  key = UpgradesKey.OrangeAutoSellReduction
   name = "I need orange soap";
   description = () => new ReactiveText("Too greedy buying the previous upgrade? Reduces the cost deduction of red soap autoseller by 1% per level");
   maxCount = 99;
@@ -368,19 +385,49 @@ class OrangeSoapAutoSellReduction extends BaseUpgrade {
     return new ReactiveText(`Cost Reduction: ${this.count}%`);
   }
 }
+class OrangeQualityAutobuy extends BaseUpgrade {
+  key = UpgradesKey.OrangeQualityAutoBuy
+  name: string = "Orange Quality Autobuy"
+  description: () => ReactiveText = () => new ReactiveText("I hope you like eating red soap.")
+  maxCount: number = 1;
+  Requirements: [() => ReactiveText, () => boolean] = [
+    () => new ReactiveText(this.cost.format()), () => Player.Money.gte(this.cost)
+  ]
+
+  ShowCondition: () => boolean = () => UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0;
+  get cost() {
+    return new Decimal("2.5e+32")
+  }
+}
+
+class OrangeSpeedAutoBuy extends BaseUpgrade {
+  key = UpgradesKey.RedSpeedAutobuy;
+  name: string = "Orange Speed Autobuy"
+  description: () => ReactiveText = () => new ReactiveText("Zooooooooooooooooooooom")
+  maxCount: number = 1;
+  Requirements: [() => ReactiveText, () => boolean] = [
+    () => new ReactiveText(this.cost.format()), () => Player.Money.gte(this.cost)]
+
+  ShowCondition: () => boolean = () => UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0;
+  get cost() {
+    return new Decimal("2.5e+32")
+  }
+}
 
 class CatUpgrade extends BaseUpgrade {
+  key = UpgradesKey.CatPrestige
   name = "Buy a.. cat?";
   description = () => new ReactiveText("Quite an expensive kitten");
   maxCount = 1;
   get cost() {
-    return new Decimal("1e+33");
+    return new Decimal("2.5e+43");
   }
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.gt(this.cost)] as [() => ReactiveText, () => boolean];
-  ShowCondition = () => true;
+  ShowCondition = () => Player.Charge.gt(1000);
 }
 
 class ChargeSpeedUpgrade extends BaseUpgrade {
+  key = UpgradesKey.ChargeSpeedUpgrade
   name = "Charge Speed";
   description = () => new ReactiveText("Improves Charge Gain by 100%");
   unlocked = true;
@@ -408,7 +455,7 @@ class ChargeSpeedUpgrade extends BaseUpgrade {
     return amt == -1 ? 1 : amt;
   }
 
-  ShowCondition = () => true;
+  ShowCondition = () => false;
 
 }
 
@@ -427,6 +474,8 @@ export const UpgradesData: Record<UpgradesKey, BaseUpgrade> = $state({
   [UpgradesKey.OrangeSoapAutoSellBonus]: new OrangeSoapAutoSellBonus(),
   [UpgradesKey.OrangeAutoSellReduction]: new OrangeSoapAutoSellReduction(),
   [UpgradesKey.UnlockFoundry]: new UnlockFoundry(),
+  [UpgradesKey.OrangeSpeedAutoBuy]: new OrangeSpeedAutoBuy(),
+  [UpgradesKey.OrangeQualityAutoBuy]: new OrangeQualityAutobuy(),
   [UpgradesKey.ChargeSpeedUpgrade]: new ChargeSpeedUpgrade(),
   [UpgradesKey.CatPrestige]: new CatUpgrade(),
 });
@@ -469,6 +518,8 @@ export function ResetUpgrades() {
     UpgradesKey.OrangeSoapAutoSeller,
     UpgradesKey.UnlockOrangeSoap,
     UpgradesKey.UnlockFoundry,
+    UpgradesKey.OrangeSpeedAutoBuy,
+    UpgradesKey.OrangeQualityAutoBuy,
     UpgradesKey.CatPrestige,
   ];
 

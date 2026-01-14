@@ -4,21 +4,17 @@
 		Soaps,
 		SoapType,
 	} from "../../../Game/Soap/Soap.svelte.ts";
-	import { DevHacks, Update } from "../../../Game/Game.svelte";
+	import { AutomationTick, DevHacks, Update } from "../../../Game/Game.svelte";
 	import { Player } from "../../../Game/Player.svelte";
 	import { SoapProducers } from "./SoapProducer.svelte.ts";
 	import { CollapsibleCard } from "svelte5-collapsible";
 	import { slide } from "svelte/transition";
-	import {
-		UpgradesData,
-		UpgradesKey,
-	} from "../../../Game/Soap/Upgrades.svelte.ts";
 	import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte.ts";
-	import { log } from "console";
 	import ActionButton from "../../Components/ActionButton.svelte";
 
 	let {
 		type,
+    unlocked,
 		canAutobuyQuality,
 		canAutobuySpeed,
 
@@ -36,6 +32,7 @@
 		autoSellBonus,
 	}: {
 		type: SoapType;
+    unlocked: boolean;
 		canAutobuyQuality: boolean;
 		canAutobuySpeed: boolean;
 
@@ -55,8 +52,6 @@
 
 	let producer = $derived(SoapProducers[type]);
 	let soap = $derived(Soaps[type]!);
-	let qualityAutobuy = $state(true);
-	let speedAutobuy = $state(true);
 	const speedCostAmt = $derived(
 		Math.min(
 			Player.BulkAmount,
@@ -72,37 +67,34 @@
 
 	let amount = $derived(Decimal.min(Player.BulkAmount, soap.Amount));
 
+  // Here for unlock
   $effect(() => {
-    producer.EatSoapUnlocked = canEat;
+    if (canEat)
+      producer.EatSoapUnlocked = true;
+    if (canDeccelerate)
+      producer.DeccelerateUnlocked = true;
   })
 
-	function Sell(): void {
-		if (soap.CanSell(amount)) {
-			soap.Sell(amount);
-		}
-	}
-
-	function Offer(): void {}
-	function Accelerate(): void {
-		producer.DecelerateCount = Math.max(producer.DecelerateCount - 1, 0);
-	}
+  // Quality autobuy code
+	let qualityAutobuy = $state(true);
 	let qualityInterval = $state(0);
-	let speedInterval = $state(0);
-	let autobuyTick = 5;
 	Update.add(() => {
-		if (qualityInterval < autobuyTick && qualityAutobuy && canAutobuyQuality) {
+		if (qualityInterval < AutomationTick && qualityAutobuy && canAutobuyQuality) {
 			qualityInterval++;
-			if (qualityInterval >= autobuyTick) {
+			if (qualityInterval >= AutomationTick) {
 				qualityInterval = 0;
 				producer.UpgradeQuality(qualityCostAmt);
 			}
 		}
 	});
 
-  Update.add(() => {
-		if (speedInterval < autobuyTick && speedAutobuy && canAutobuySpeed) {
+  // Speed autobuy code
+	let speedAutobuy = $state(true);
+	let speedInterval = $state(0);
+  Update.add(() =>  {
+		if (speedInterval < AutomationTick && speedAutobuy && canAutobuySpeed) {
 			speedInterval++;
-			if (speedInterval >= autobuyTick) {
+			if (speedInterval >= AutomationTick) {
 				speedInterval = 0;
 				producer.UpgradeSpeed(speedCostAmt);
 			}
@@ -110,12 +102,9 @@
   })
 
 	let counter = $state(0);
-	Update.add(() => {
-		if (producer.Unlocked) {
-			producer.AddProgress();
-		}
-
-		if (!canAutoSell) return;
+  let autoSell = $state(true);
+  Update.add(() => {
+		if (!autoSell) return;
 
 		if (counter < autoSellInterval) {
 			counter++;
@@ -128,14 +117,18 @@
 			soap.Sell(sellAmount, reductionAmount);
 			counter = 0;
 		}
-	});
+  })
 
-	producer.Unlocked = true;
+	Update.add(() => {
+		if (producer.Unlocked) {
+			producer.AddProgress();
+		}
+	});
 </script>
 
-<div class="border p-2 h-fit">
+<div class="border p-2 h-fit min-w-xl max-w-2xl">
 	<div class="flex flex-row border-b pb-4">
-		<div class="flex flex-col">
+		<div class="flex flex-col  w-9/12">
 			<div class="mb-3 w-full h-full flex flex-col relative">
 				<div class="flex flex-row">
 					<h1 class="mr-auto">
@@ -164,7 +157,7 @@
 						disabled={producer.GetQualityCost(qualityCostAmt).gt(Player.Money)}
 					>
 						{#snippet content()}
-							Upgrade Quality +{qualityCostAmt}
+							Upgrade Quality [+{qualityCostAmt}]
 							<div>
 								({producer.QualityCount}) Cost: ${producer
 									.GetQualityCost(qualityCostAmt)
@@ -184,7 +177,7 @@
 						>
 							{#snippet content()}
 								<span class="text-xs font-semibold">
-									Autobuy: {qualityAutobuy ? "on" : "off"}
+									Auto Buy: {qualityAutobuy ? "on" : "off"}
 								</span>
 							{/snippet}
 						</ActionButton>
@@ -199,7 +192,7 @@
 						}}
 					>
 						{#snippet content()}
-							Upgrade Speed +{speedCostAmt}
+							Upgrade Speed [+{speedCostAmt}]
 							<div>
 								({producer.SpeedCount}) Cost: ${producer
 									.GetSpeedCost(speedCostAmt)
@@ -218,7 +211,7 @@
 						>
 							{#snippet content()}
 								<span class="font-semibold text-xs">
-									Autobuy: {speedAutobuy ? "on" : "off"}
+									Auto Buy: {speedAutobuy ? "on" : "off"}
 								</span>
 							{/snippet}
 						</ActionButton>
@@ -253,49 +246,52 @@
 			</div>
 		</div>
 
-		<div class="ml-2 pl-2 border-l">
+		<div class="ml-2 pl-2 border-l w-3/12">
 			<div class="flex flex-col h-full">
 				<h1 class="text-center underline mb-2">Actions</h1>
 				<div class="flex flex-col">
 					<ActionButton
-						disabled={soap.Amount.lte(amount) && soap.Amount.lt(0)}
-						onclick={Sell}
+						disabled={soap.Amount.lte(amount) || soap.Amount.lte(0)}
+						onclick={() => { soap.Sell(amount) }}
 					>
 						{#snippet content()}
 							Sell {amount.format()}x
 						{/snippet}
 					</ActionButton>
+          
+          {#if canAutoSell || DevHacks.skipUnlock}
+            <ActionButton
+              customStyle={"padding-top: 0px; padding-bottom: 0px; margin-bottom: .5rem;"}
+              disabled={autoSell}
+              onclick={() => { autoSell = !autoSell }}
+            >
+              {#snippet content()}
+                <span class="text-xs font-semibold">
+                  Auto Sell: { autoSell ? 'on' : 'off'}
+                </span>
+              {/snippet}
+            </ActionButton>
+          {/if}
 
-					{#if UpgradesData[UpgradesKey.CatPrestige].count > 0 || DevHacks.skipUnlock}
-						<ActionButton
-							disabled={soap.Amount.gte(amount) && soap.Amount.gt(0)}
-							onclick={Sell}
-						>
-							{#snippet content()}
-								Offer: {amount.format()}x
-							{/snippet}
-						</ActionButton>
-					{/if}
+          {#if producer.DecelerateCount > 0 || DevHacks.skipUnlock}
+            <ActionButton
+              disabled={producer.DecelerateCount < 1}
+              onclick={() => { producer.DecelerateCount = Math.max(producer.DecelerateCount - 1, 0); }}
+            >
+              {#snippet content()}
+                Accelerate
+              {/snippet}
+            </ActionButton>
+          {/if}
+        </div>
+      </div>
+    </div>
+  </div>
 
-					{#if producer.DecelerateCount > 0}
-						<ActionButton
-							disabled={producer.DecelerateCount < 1}
-							onclick={Accelerate}
-						>
-							{#snippet content()}
-								Accelerate
-							{/snippet}
-						</ActionButton>
-					{/if}
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<CollapsibleCard transition={{ transition: slide }} isOpen={true}>
-		{#snippet header()}
-			<div class="h-2 flex flex-row"></div>
-		{/snippet}
+  <CollapsibleCard transition={{ transition: slide }} isOpen={true}>
+    {#snippet header()}
+      <div class="h-2 flex flex-row"></div>
+    {/snippet}
 
 		{#snippet body()}
 			<div class="flex flex-row">

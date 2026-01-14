@@ -29,7 +29,8 @@ export abstract class BaseGenerator implements IUpgradesInfo {
 }
 
 class ChargeSpeed extends BaseGenerator {
-  private formula = new ExpPolynomial(new Decimal("1e+15"), new Decimal(2.5));
+  // 67 hahahahahahahhhhhahahhhah
+  private formula = new ExpPolynomial(new Decimal("1.067e+15"), new Decimal(2.5));
   private get cost() {
     return this.formula.Integrate(this.count, this.count + this.buyAmount);
   }
@@ -40,8 +41,8 @@ class ChargeSpeed extends BaseGenerator {
     this.count += this.buyAmount;
   };
   name: string = "Charge Speed"
-  description: () => ReactiveText = () => new ReactiveText("Increases Charge Gain by 100% per level");
-  effect: (() => ReactiveText) = () => new ReactiveText(`${this.count * 100}% Gain`);
+  description: () => ReactiveText = () => new ReactiveText("Increases Charge Gain by 0.25 per level");
+  effect: (() => ReactiveText) = () => new ReactiveText(`Gain: ${this.count * 0.25} `);
   maxCount: number = 999;
   Requirements: [() => ReactiveText, () => boolean] = [() => new ReactiveText(`${this.cost.format()} Red Soap`), () => Soaps[0].Amount.gt(this.cost)];
   ShowCondition: () => boolean = () => true;

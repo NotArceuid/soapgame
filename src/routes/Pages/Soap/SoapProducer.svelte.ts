@@ -1,7 +1,7 @@
 import { SoapBase, Soaps, SoapType } from "../../../Game/Soap/Soap.svelte";
 import { Player } from "../../../Game/Player.svelte";
 import { Decimal } from "../../../Game/Shared/BreakInfinity/Decimal.svelte";
-import { Exponential, ExpPolynomial } from "../../../Game/Shared/Math";
+import { ExpPolynomial } from "../../../Game/Shared/Math";
 import { Multipliers } from "../../../Game/Shared/Multipliers";
 import { SaveSystem } from "../../../Game/Saves";
 import { ResetUpgrades, UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
@@ -12,21 +12,20 @@ import { log } from "console";
 export class SoapProducer {
   public SoapType: SoapType;
   private Soap: SoapBase;
-  public Unlocked: boolean = $state(false);
+  public Unlocked: boolean = $state(true);
   public SpeedCount: number = $state(0)
   public SpeedFormula: ExpPolynomial;
   public QualityCount: number = $state(0);
   public QualityFormula: ExpPolynomial;
   public AutoDeccelerate: boolean = $state(false);
   public DecelerateCount: number = $state(0)
-
   public Progress: Decimal = $state(Decimal.ZERO)
-
   public AutoEat: boolean = $state(false);
   public AutoSellUnlocked: boolean = $state(false);
+  public DeccelerateBase: Decimal = $state(Decimal.ONE);
 
   public EatSoapUnlocked: boolean = $state(false)
-  public DeccelerateBase: Decimal = $state(Decimal.ONE);
+  public DeccelerateUnlocked: boolean = $state(false)
   constructor(props: SoapProducerProps) {
     this.SoapType = props.type;
     this.Soap = Soaps[props.type];
@@ -179,7 +178,7 @@ export const SoapProducers: Record<SoapType, SoapProducer> = {
   }),
   [SoapType.Orange]: new SoapProducer({
     type: SoapType.Orange,
-    DeccelerateBase: new Decimal(100)
+    DeccelerateBase: new Decimal(10)
   }),
   [SoapType.Yellow]: new SoapProducer({
     type: SoapType.Yellow,

@@ -16,13 +16,9 @@
 		log(currUpgrade);
 	});
 </script>
-
-<div class="absolute pr-4 w-full flex flex-col h-9/12">
-	<div class="flex flex-row ml-auto">
-		<label for="checkbox" class="mr-2"> Show Max Upgrades</label>
-		<input type="checkbox" bind:checked={showMaxxedUpgrades} />
-	</div>
-	<div class="flex flex-wrap">
+ 
+<div class="absolute pr-4 w-full flex flex-col h-full overflow-y-hidden">
+	<div class="flex flex-wrap overflow-y-scroll">
 		{#each data as upgrade}
 			{#if (upgrade[1].ShowCondition() && (showMaxxedUpgrades || upgrade[1].count < upgrade[1].maxCount)) || DevHacks.skipUnlock}
 				<ActionButton
@@ -43,4 +39,10 @@
 	<div class="mt-auto">
 		<UpgradesInfo upgrade={currUpgrade} />
 	</div>
+
+	<div class="flex flex-row ml-auto mb-4">
+		<label for="checkbox" class="mr-2"> Show Max Upgrades</label>
+		<input type="checkbox" bind:checked={showMaxxedUpgrades} />
+	</div>
+
 </div>

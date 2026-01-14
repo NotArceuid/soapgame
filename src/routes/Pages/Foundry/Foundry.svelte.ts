@@ -76,6 +76,6 @@ function formatChargeMilestone(index: number): string {
 }
 
 Update.add(() => {
-  let chargeGain = new Decimal(1).mul(GeneratorsData[GeneratorsKey.ChargeSpeed].count).mul(UpgradesData[UpgradesKey.ChargeSpeedUpgrade].count);
+  let chargeGain = new Decimal(GeneratorsData[GeneratorsKey.ChargeSpeed].count * 0.25).mul(UpgradesData[UpgradesKey.ChargeSpeedUpgrade].count + 1);
   Player.Charge = Player.Charge.add(chargeGain);
 })

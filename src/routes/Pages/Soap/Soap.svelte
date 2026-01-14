@@ -12,6 +12,7 @@
 		UpgradesKey,
 	} from "../../../Game/Soap/Upgrades.svelte";
 	import { PageHandler, PagesEnum } from "../Pages.svelte.ts";
+	import { log } from "console";
 
 	const pageHandler = new PageHandler<SoapPages>(false, PagesEnum.Soap);
 
@@ -74,7 +75,7 @@
 	</div>
 	<div
 		id="soap-pages"
-		class="w-full flex flex-row h-screen overflow-y-scroll relative"
+		class="w-full flex flex-row h-screen relative overflow-y-scroll"
 	>
 		<SoapProduction />
 		<SoapUpgrades />

@@ -40,14 +40,16 @@
 	<div class="h-full relative m-3 p-3 flex flex-col">
 		<NavBar />
 		<div class="flex flex-rows w-full h-full">
-			<div id="locations" class="w-10/12 relative">
+			<div id="locations" class="w-11/12 relative border-l">
 				<Soap />
 				<Cat />
 				<Achievements />
 				<Settings />
 				<Howtfdoiplay />
 			</div>
+      <div class="min-w-42">
 			<CurrenciesPanel />
+      </div>
 		</div>
 
 		<div class="absolute bottom-5 right-5">

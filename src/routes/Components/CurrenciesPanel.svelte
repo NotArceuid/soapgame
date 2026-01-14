@@ -14,7 +14,7 @@
 	let maxBulkAmt = $derived(UpgradesData[UpgradesKey.BulkUpgrade].count + 1);
 </script>
 
-<div class="border-l w-2/12">
+<div class="border-x h-full">
 	<h1 class="text-center border-b py-2 font-bold">Currencies</h1>
 	<div class="m-3 w-full">
 		<h1>Money: {Player.Money.format()}</h1>
