@@ -90,22 +90,24 @@
 	let speedInterval = $state(0);
 	let autobuyTick = 5;
 	Update.add(() => {
-		if (qualityInterval < autobuyTick && qualityAutobuy) {
+		if (qualityInterval < autobuyTick && qualityAutobuy && canAutobuyQuality) {
 			qualityInterval++;
 			if (qualityInterval >= autobuyTick) {
 				qualityInterval = 0;
 				producer.UpgradeQuality(qualityCostAmt);
 			}
 		}
+	});
 
-		if (speedInterval < autobuyTick && speedAutobuy) {
+  Update.add(() => {
+		if (speedInterval < autobuyTick && speedAutobuy && canAutobuySpeed) {
 			speedInterval++;
 			if (speedInterval >= autobuyTick) {
 				speedInterval = 0;
 				producer.UpgradeSpeed(speedCostAmt);
 			}
 		}
-	});
+  })
 
 	let counter = $state(0);
 	Update.add(() => {
@@ -277,7 +279,7 @@
 
 					{#if producer.DecelerateCount > 0}
 						<ActionButton
-							disabled={producer.DecelerateCount <= 1}
+							disabled={producer.DecelerateCount < 1}
 							onclick={Accelerate}
 						>
 							{#snippet content()}
