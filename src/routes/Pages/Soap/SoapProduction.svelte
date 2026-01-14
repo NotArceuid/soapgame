@@ -10,8 +10,8 @@
 	import { SoapProducers } from "./SoapProducer.svelte.ts";
 </script>
 
-<div class="absolute p-2 w-full overflow-y-scroll">
-	<div class="flex flex-wrap w-full md:space-x-4 space-y-6 ">
+<div class="absolute pl-2 pt-4 w-full overflow-y-scroll">
+	<div class="flex flex-wrap w-full lg:space-x-2 md:space-x-6 space-y-6 ">
 		<SoapProducer
       unlocked={true}
 			type={SoapType.Red}

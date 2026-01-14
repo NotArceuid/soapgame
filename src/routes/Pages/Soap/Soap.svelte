@@ -55,7 +55,7 @@
 </script>
 
 <div class="absolute w-full pt-2 flex flex-col h-full">
-	<div class="flex flex-row w-full ml-2 pr-2" id="soap-nav">
+	<div class="flex flex-row w-full ml-2" id="soap-nav">
 		<button onclick={() => pageHandler.ChangePage(SoapPages.Produce)}>
 			Produce
 		</button>

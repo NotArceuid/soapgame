@@ -1,14 +1,18 @@
 <script lang="ts">
+	import { DevHacks } from "../../Game/Game.svelte";
+	import { UpgradesData, UpgradesKey } from "../../Game/Soap/Upgrades.svelte";
 	import { MainPageHandler, PagesEnum } from "../Pages/Pages.svelte";
 </script>
 
-<div id="navbar" class="border-x border-t p-3">
+<div id="navbar" class="border-x border-t py-3">
 	<button onclick={() => MainPageHandler.ChangePage(PagesEnum.Soap)}
 		>Soap</button
 	>
-	<button onclick={() => MainPageHandler.ChangePage(PagesEnum.Cat)}
-		>Cat ₍^. .^₎⟆</button
-	>
+  {#if UpgradesData[UpgradesKey.CatPrestige].count > 0 || DevHacks.skipUnlock}
+    <button onclick={() => MainPageHandler.ChangePage(PagesEnum.Cat)}>
+    Cat ₍^. .^₎⟆
+    </button>
+  {/if}
 	<button onclick={() => MainPageHandler.ChangePage(PagesEnum.Achievements)}
 		>Achievements</button
 	>

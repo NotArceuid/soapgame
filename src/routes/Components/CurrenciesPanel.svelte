@@ -37,20 +37,11 @@
 		</CollapsibleCard>
 	</div>
 	{#if UpgradesData[UpgradesKey.BulkUpgrade].count > 0 || DevHacks.skipUnlock}
-		<div class="w-full flex flex-col text-center border-t">
-			<h1>Bulk Limit</h1>
-			<div class="relative w-full px-4">
-				<div class="flex flex-row h-full align-middle items-center">
-					<input
-						type="range"
-						min="1"
-						max={maxBulkAmt}
-						bind:value={Player.BulkAmount}
-						class="w-full h-2 bg-gray-200 cursor-pointer"
-					/>
-					<h1>{Player.BulkAmount}</h1>
-				</div>
-			</div>
+		<div class="w-full border-t p-3">
+      <div class="flex flex-row">
+			  <h1 class="content-center">Bulk Limit: </h1>
+        <input type="number" max="{maxBulkAmt}" min="1" value="{Player.BulkAmount}" class="ml-3 w-12 border"/>
+      </div>
 		</div>
 	{/if}
 </div>

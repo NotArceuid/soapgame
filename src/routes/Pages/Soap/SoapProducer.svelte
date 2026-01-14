@@ -66,13 +66,14 @@
 	);
 
 	let amount = $derived(Decimal.min(Player.BulkAmount, soap.Amount));
-
   // Here for unlock
   $effect(() => {
     if (canEat)
       producer.EatSoapUnlocked = true;
     if (canDeccelerate)
       producer.DeccelerateUnlocked = true;
+    if (canAutoSell)
+      autoSell = true;
   })
 
   // Quality autobuy code
@@ -104,7 +105,7 @@
 	let counter = $state(0);
   let autoSell = $state(true);
   Update.add(() => {
-		if (!autoSell) return;
+		if (!autoSell || !canAutoSell) return;
 
 		if (counter < autoSellInterval) {
 			counter++;
