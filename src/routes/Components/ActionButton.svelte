@@ -15,7 +15,7 @@
 		buttonClass?: string;
 	} = $props();
 
-	let disableStyle = $derived(disabled ? "bg-gray-200/20" : "we");
+	let disableStyle = $derived(disabled ? "bg-inactive/10" : "bg-active/10");
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

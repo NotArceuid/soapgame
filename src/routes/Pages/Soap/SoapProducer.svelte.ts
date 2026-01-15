@@ -5,7 +5,7 @@ import { ExpPolynomial } from "../../../Game/Shared/Math";
 import { Multipliers } from "../../../Game/Shared/Multipliers";
 import { SaveSystem } from "../../../Game/Saves";
 import { ResetUpgrades, UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
-import { AchievementKey, AchievementsData } from "../../../Game/Achievements/Achievements.svelte";
+import { AchievementKey, AchievementsData, UnlockAchievement } from "../../../Game/Achievements/Achievements.svelte";
 import { ChargeMilestones } from "../Foundry/Foundry.svelte.ts";
 import { log } from "console";
 
@@ -98,7 +98,9 @@ export class SoapProducer {
     return this.Soap.EatMessage;
   }
   AddProgress() {
-    if (AchievementsData[AchievementKey.HighSpeed].check(this.Progress, this.MaxProgress)) AchievementsData[AchievementKey.HighSpeed].unlocked = true;
+    if (AchievementsData[AchievementKey.HighSpeed].check(this.Progress, this.MaxProgress))
+      UnlockAchievement(AchievementKey.HighSpeed)
+
     this.Progress = this.Progress.add(this.Speed);
 
     // Overexceeded logic here
@@ -107,8 +109,8 @@ export class SoapProducer {
       this.Soap?.SoapMade(this.Quality);
 
       let qualityDecimal = new Decimal(this.Quality);
-      if (AchievementsData[AchievementKey.Soapy].check(qualityDecimal)) AchievementsData[AchievementKey.Soapy].unlocked = true;
-      if (AchievementsData[AchievementKey.Millionaire].check(qualityDecimal)) AchievementsData[AchievementKey.Millionaire].unlocked = true;
+      if (AchievementsData[AchievementKey.Soapy].check(qualityDecimal)) UnlockAchievement(AchievementKey.Soapy)
+      if (AchievementsData[AchievementKey.Millionaire].check(qualityDecimal)) UnlockAchievement(AchievementKey.Millionaire)
     }
   }
 

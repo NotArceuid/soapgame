@@ -3,6 +3,10 @@
 	import { SaveSystem } from "../../../Game/Saves";
 	import { DevHacks } from "../../../Game/Game.svelte";
 	import { ChargeMilestones } from "./Foundry.svelte.ts";
+	import {
+		AchievementKey,
+		UnlockAchievement,
+	} from "../../../Game/Achievements/Achievements.svelte.ts";
 
 	interface MilestoneSaves {
 		ticketunlocked: boolean;
@@ -35,7 +39,10 @@
 	});
 
 	$effect(() => {
-		if (Player.Charge.gt(0)) chargeunlocked = true;
+		if (Player.Charge.gt(0)) {
+			chargeunlocked = true;
+			UnlockAchievement(AchievementKey.Charge);
+		}
 	});
 </script>
 

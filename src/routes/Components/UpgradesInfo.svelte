@@ -28,7 +28,7 @@
 	}
 </script>
 
-<div class="w-full h-full flex items-center align-middle flex-col">
+<div class="w-full h-full flex items-center align-middle flex-col p-5 border-b">
 	{#if upgrade}
 		<h1>
 			{upgrade.name}

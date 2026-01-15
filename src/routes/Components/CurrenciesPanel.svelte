@@ -10,8 +10,23 @@
 		SoapType,
 	} from "../../Game/Soap/Soap.svelte";
 	import { log } from "console";
+	import {
+		AchievementKey,
+		AchievementsData,
+		UnlockAchievement,
+	} from "../../Game/Achievements/Achievements.svelte";
+	import { Clamp } from "../../Game/Shared/Math";
 
-	let maxBulkAmt = $derived(UpgradesData[UpgradesKey.BulkUpgrade].count + 1);
+	let maxBulkAmt = $derived(
+		UpgradesData[UpgradesKey.BulkUpgrade].count +
+			1 +
+			UpgradesData[UpgradesKey.BulkUpgrade2].count,
+	);
+
+	$effect(() => {
+		if (AchievementsData[AchievementKey.Millionaire].check(Player.Money))
+			UnlockAchievement(AchievementKey.Millionaire);
+	});
 </script>
 
 <div class="border-x h-full">
@@ -38,10 +53,19 @@
 	</div>
 	{#if UpgradesData[UpgradesKey.BulkUpgrade].count > 0 || DevHacks.skipUnlock}
 		<div class="w-full border-t p-3">
-      <div class="flex flex-row">
-			  <h1 class="content-center">Bulk Limit: </h1>
-        <input type="number" max="{maxBulkAmt}" min="1" value="{Player.BulkAmount}" class="ml-3 w-12 border"/>
-      </div>
+			<div class="flex flex-row">
+				<h1 class="content-center">Bulk Limit:</h1>
+				<input
+					type="number"
+					max={maxBulkAmt}
+					min="1"
+					bind:value={
+						() => Player.BulkAmount,
+						(v) => (Player.BulkAmount = Clamp(v, 0, maxBulkAmt))
+					}
+					class="ml-3 w-12 border"
+				/>
+			</div>
 		</div>
 	{/if}
 </div>

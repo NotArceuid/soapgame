@@ -2,17 +2,41 @@ import { InvokeableEvent } from "../Shared/Events";
 import type { Decimal } from "../Shared/BreakInfinity/Decimal.svelte";
 
 export const UnlockAchievementEvent: InvokeableEvent<AchievementKey> = new InvokeableEvent<AchievementKey>();
+
 export function UnlockAchievement(key: AchievementKey) {
+  if (AchievementsData[key].unlocked)
+    return;
+
   AchievementsData[key].unlocked = true;
   UnlockAchievementEvent.invoke(key);
 }
 
 export enum AchievementKey {
-  Soapy, Quality, Speedy, Businessman,
-  Automation, OCD, Millionaire, Deccelerate,
-  HighSpeed, Accelerate, Deccelerate2, EatSoap,
-  Deccelerate3, Deccelerate4, Foundry, Charge,
-  Ticket, OrangeSoap, OrangeDeccel1, ILY, Maxxed, Cat
+  Soapy,
+  Businessman,
+  Quality,
+  Speedy,
+  Nice,
+  Upgrades,
+  Automation,
+  OCD,
+  Fractional,
+  Millionaire,
+  Deccelerate,
+  HighSpeed,
+  Accelerate,
+  Deccelerate2,
+  EatSoap,
+  Deccelerate3,
+  Deccelerate4,
+  Foundry,
+  Bulk,
+  Charge,
+  OrangeSoap,
+  OrangeDeccel1,
+  ILY,
+  Maxxed,
+  Cat
 }
 
 export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
@@ -21,6 +45,11 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
     description: "Produce your first soap",
     unlocked: false,
     check: (...props) => props[0].gt(0) && !AchievementsData[AchievementKey.Soapy].unlocked!,
+  },
+  [AchievementKey.Businessman]: {
+    name: "Businessman",
+    description: "Sell your first soap",
+    check: (...props) => props[0].gt(1)
   },
   [AchievementKey.Quality]: {
     name: "Quality",
@@ -32,11 +61,17 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
     description: "Upgrade producer speed once ",
     check: (...props) => props[0].gt(1),
   },
-  [AchievementKey.Businessman]: {
-    name: "Businessman",
-    description: "Sell your first soap",
-    check: (...props) => props[0].gt(1)
+  [AchievementKey.Nice]: {
+    name: "Nice",
+    description: "6/9 in the big 26",
+    check: (...props) => props[0].eq(6) && props[1].eq(9),
   },
+  [AchievementKey.Upgrades]: {
+    name: "ooo, shinyyy",
+    description: "Unlock upgrades",
+    check: (_) => false
+  },
+
   [AchievementKey.Automation]: {
     name: "Autoselling",
     description: "The factory must grow!!",
@@ -46,6 +81,11 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
     name: "5 squares",
     description: "Get more than 25 quality and speed upgrades",
     check: (...props) => props[0].gte(25) && props[1].gte(25)
+  },
+  [AchievementKey.Fractional]: {
+    name: "No fractional upgrades bruhv",
+    description: "Input a non integer number",
+    check: (...props) => Number.isInteger(props[0])
   },
   [AchievementKey.Millionaire]: {
     name: "Millionaire",
@@ -65,43 +105,47 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
   [AchievementKey.Accelerate]: {
     name: "Whoaaaa.. slow down man",
     description: "Accelerate once",
-    check: (...props) => props[0].gt(1)
+    check: (_) => false
   },
+
   [AchievementKey.Deccelerate2]: {
     name: "Deccelerate 2",
     description: "You've passed deccelerate 2, now be prepare for the wall",
     check: (...props) => props[0].gt(1)
   },
   [AchievementKey.EatSoap]: {
-    name: "Eat Soap",
+    name: "Eat Red Soap",
     description: "Fyi: there is a wall here [[][][]]",
     check: (...props) => props[0].gt(0)
   },
+
   [AchievementKey.Deccelerate3]: {
     name: "Deccelerate 3",
     description: "You'd love the quality autoseller i gave yall after this",
-    check: (...props) => props[0].gt(0)
+    check: (...props) => props[0].gt(2)
   },
   [AchievementKey.Deccelerate4]: {
     name: "Deccelerate 4",
     description: "Phew.. pass the wall. it sure took a while right.. right??",
-    check: (...props) => props[0].gt(0)
+    check: (...props) => props[0].gt(3)
   },
+
   [AchievementKey.Foundry]: {
     name: "Foundry",
     description: "You did it!!! You passed the wall!!",
     check: (...props) => props[0].gt(0)
+  },
+  [AchievementKey.Bulk]: {
+    name: "Bulked upp",
+    description: "get 25 max bulk buy",
+    check: (...props) => props[0].gt(24)
   },
   [AchievementKey.Charge]: {
     name: "Unlock Charge",
     description: "Totally not stolen from a certain grass game",
     check: (...props) => props[0].gt(0)
   },
-  [AchievementKey.Ticket]: {
-    name: "Awesome time sink",
-    description: "Make your first ticket",
-    check: (...props) => props[0].gt(0)
-  },
+
   [AchievementKey.OrangeSoap]: {
     name: "Orange ca- i mean soap",
     description: "Unlock orange soap Meowmeowowemowe",
@@ -112,11 +156,13 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
     description: "Deccelerate orange soap once ",
     check: (...props) => props[0].gt(0)
   },
+
   [AchievementKey.ILY]: {
     name: "ILY",
     description: "Get 520 Quality",
-    check: (...props) => props[0].gt(0)
+    check: (...props) => props[0].gt(520)
   },
+
   [AchievementKey.Maxxed]: {
     name: "Maxxed",
     description: "Max out the speed and quality upgrades.",

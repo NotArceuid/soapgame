@@ -47,7 +47,7 @@
 				<Settings />
 				<Howtfdoiplay />
 			</div>
-      <div class="min-w-42">
+      <div class="min-w-48">
 			<CurrenciesPanel />
       </div>
 		</div>

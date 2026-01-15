@@ -26,6 +26,7 @@ export enum UpgradesKey {
   RedQualityAutobuy,
   RedSpeedAutobuy,
   UnlockFoundry,
+  BulkUpgrade2,
   OrangeQualityAutoBuy,
   OrangeSpeedAutoBuy,
   CatPrestige,
@@ -284,6 +285,41 @@ class UnlockFoundry extends BaseUpgrade {
   ShowCondition = () => true;
 }
 
+class BulkUpgrade2 extends BaseUpgrade {
+  key = UpgradesKey.BulkUpgrade2
+  name = "Bulked up";
+  description = () => new ReactiveText("Increases Bulk Limit by 1 per level, you must really hate clicking on upgrades.");
+  maxCount = 15;
+  get cost(): Decimal {
+    let amt = Decimal.ZERO;
+    for (let i = 0; i < this.buyAmount; i++) {
+      amt = amt.add(new Decimal(1000).mul(new Decimal(10).pow(UpgradesData[UpgradesKey.BulkUpgrade].count! + i)))
+    }
+    return amt;
+  }
+  getMax = () => {
+    let count = 0;
+    let tempCost = new Decimal("2.5e+25");
+    let currentCount = UpgradesData[UpgradesKey.BulkUpgrade].count || 0;
+
+    while (count < this.maxCount) {
+      let nextCost = tempCost.mul(new Decimal(10).pow(currentCount + count));
+      if (Player.Money.lessThan(nextCost)) break;
+      tempCost = nextCost;
+      count++;
+    }
+
+    return count;
+  }
+
+  effect = () => {
+    return new ReactiveText(`Bulk amount: ${this.count}`)
+  }
+
+  Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
+  ShowCondition = () => true;
+}
+
 class UnlockOrangeSoap extends BaseUpgrade {
   key = UpgradesKey.UnlockOrangeSoap
   name = "Unlock orange soap";
@@ -474,6 +510,7 @@ export const UpgradesData: Record<UpgradesKey, BaseUpgrade> = $state({
   [UpgradesKey.OrangeSoapAutoSellBonus]: new OrangeSoapAutoSellBonus(),
   [UpgradesKey.OrangeAutoSellReduction]: new OrangeSoapAutoSellReduction(),
   [UpgradesKey.UnlockFoundry]: new UnlockFoundry(),
+  [UpgradesKey.BulkUpgrade2]: new BulkUpgrade2(),
   [UpgradesKey.OrangeSpeedAutoBuy]: new OrangeSpeedAutoBuy(),
   [UpgradesKey.OrangeQualityAutoBuy]: new OrangeQualityAutobuy(),
   [UpgradesKey.ChargeSpeedUpgrade]: new ChargeSpeedUpgrade(),
@@ -518,6 +555,7 @@ export function ResetUpgrades() {
     UpgradesKey.OrangeSoapAutoSeller,
     UpgradesKey.UnlockOrangeSoap,
     UpgradesKey.UnlockFoundry,
+    UpgradesKey.BulkUpgrade2,
     UpgradesKey.OrangeSpeedAutoBuy,
     UpgradesKey.OrangeQualityAutoBuy,
     UpgradesKey.CatPrestige,

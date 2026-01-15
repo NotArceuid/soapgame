@@ -5,7 +5,9 @@
  --color-bg: #fff;
  --color-font: #000;
  --color-border: #000;
- --color-active: #ddd
+ --color-active: #fff;
+ --color-inactive: #505366;
+ --color-hover: #505366;
 }
 
 @layer theme {
@@ -14,7 +16,9 @@
       --color-bg: #1d2021;
       --color-border: #fff;
       --color-active: #ddd;
+      --color-inactive: #ccc;
       --color-font: #cccccc;
+      --color-hover: #ccc;
     }
   }
 }
@@ -25,13 +29,10 @@ button {
 }
 
 button:hover {
-  background-color: var(--color-bg);
-  opacity: 0.9;
+  background-color: color-mix(in srgb, var(--color-hover) 10%, transparent);
   cursor: pointer;
 }
 
 select:hover {
   cursor:pointer;
 }
-
-

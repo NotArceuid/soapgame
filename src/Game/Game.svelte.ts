@@ -138,3 +138,7 @@ export const DevHacks = $state({
 
 export const MainLoop = new GameLoop();
 export const AutomationTick: number = 5;
+
+export function CalculateOfflineProgress() {
+
+}

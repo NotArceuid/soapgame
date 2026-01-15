@@ -11,9 +11,9 @@
 </script>
 
 <div class="absolute pl-2 pt-4 w-full overflow-y-scroll">
-	<div class="flex flex-wrap w-full lg:space-x-2 md:space-x-6 space-y-6 ">
+	<div class="flex flex-wrap w-full lg:space-x-2 md:space-x-6 space-y-6">
 		<SoapProducer
-      unlocked={true}
+			unlocked={true}
 			type={SoapType.Red}
 			canAutoSell={UpgradesData[UpgradesKey.RedSoapAutoSeller].count > 0}
 			autoSellInterval={30 -
@@ -30,30 +30,29 @@
 			autoEatBonus={new Decimal(1)}
 		/>
 
-		{#if DevHacks.skipUnlock}
-			<SoapProducer
-        unlocked={UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0}
-				type={SoapType.Orange}
-				canAutoSell={UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count > 0}
-				autoSellInterval={30 -
-					3 * UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count}
-				autoSellReduction={UpgradesData[UpgradesKey.OrangeAutoSellReduction]
-					.count}
-				autoSellBonus={UpgradesData[UpgradesKey.OrangeSoapAutoSellBonus].count}
-				canAutobuyQuality={UpgradesData[UpgradesKey.OrangeQualityAutoBuy].count > 0}
-				canAutobuySpeed={UpgradesData[UpgradesKey.OrangeSpeedAutoBuy].count > 0}
-				canAutoDeccelerate={false}
-				canDeccelerate={SoapProducers[SoapType.Orange].Speed.gt(100)}
-				canEat={false}
-				autoEatInterval={0}
-				canAutoEat={false}
-				autoEatBonus={new Decimal(1)}
-			/>
-		{/if}
+		<SoapProducer
+			unlocked={UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0}
+			type={SoapType.Orange}
+			canAutoSell={UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count > 0}
+			autoSellInterval={30 -
+				3 * UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count}
+			autoSellReduction={UpgradesData[UpgradesKey.OrangeAutoSellReduction]
+				.count}
+			autoSellBonus={UpgradesData[UpgradesKey.OrangeSoapAutoSellBonus].count}
+			canAutobuyQuality={UpgradesData[UpgradesKey.OrangeQualityAutoBuy].count >
+				0}
+			canAutobuySpeed={UpgradesData[UpgradesKey.OrangeSpeedAutoBuy].count > 0}
+			canAutoDeccelerate={false}
+			canDeccelerate={SoapProducers[SoapType.Orange].Speed.gt(100)}
+			canEat={false}
+			autoEatInterval={0}
+			canAutoEat={false}
+			autoEatBonus={new Decimal(1)}
+		/>
 
 		{#if DevHacks.skipUnlock}
 			<SoapProducer
-        unlocked={UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0}
+				unlocked={UpgradesData[UpgradesKey.UnlockOrangeSoap].count > 0}
 				type={SoapType.Orange}
 				canAutoSell={UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count > 0}
 				autoSellInterval={30 -
@@ -61,7 +60,8 @@
 				autoSellReduction={UpgradesData[UpgradesKey.OrangeAutoSellReduction]
 					.count}
 				autoSellBonus={UpgradesData[UpgradesKey.OrangeSoapAutoSellBonus].count}
-				canAutobuyQuality={UpgradesData[UpgradesKey.OrangeQualityAutoBuy].count > 0}
+				canAutobuyQuality={UpgradesData[UpgradesKey.OrangeQualityAutoBuy]
+					.count > 0}
 				canAutobuySpeed={UpgradesData[UpgradesKey.OrangeSpeedAutoBuy].count > 0}
 				canAutoDeccelerate={false}
 				canDeccelerate={SoapProducers[SoapType.Orange].Speed.gt(100)}

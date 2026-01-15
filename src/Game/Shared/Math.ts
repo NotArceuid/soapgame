@@ -245,3 +245,14 @@ export function cmp(left: Decimal, right: Decimal): number {
 
   throw Error("Unreachable code");
 }
+
+export function Clamp(value: number, min: number, max: number) {
+  if (value >= max) {
+    return max
+  }
+  else if (value <= min) {
+    return min
+  }
+
+  return value;
+}
