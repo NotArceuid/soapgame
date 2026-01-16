@@ -1,30 +1,23 @@
 <script lang="ts">
-	import {
-		AchievementsData,
-		UnlockAchievementEvent,
-		type IAchievement,
-	} from "../../Game/Achievements/Achievements.svelte.ts";
+	import { onMount } from "svelte";
+	import { type INotification } from "./Notification.svelte";
+	let { data, done = $bindable() }: { data: INotification; done: () => void } =
+		$props();
 
-	let data = $state<IAchievement>();
-	let visible = $state(false);
-	UnlockAchievementEvent.add((key) => {
-		data = AchievementsData[key];
-		visible = true;
+	onMount(() => {
 		setTimeout(() => {
-			visible = !visible;
-		}, 5000);
+			done();
+		}, 2500);
 	});
 </script>
 
 <div
 	class="border p-2 min-w-74 min-h-32 max-w-84 overflow-y-auto opacity-100 bg-bg
-  transition-all duration-300 ease-in-out
-  {visible ? 'translate-y-0' : 'translate-y-4 invisible'}"
+  transition-all duration-300 ease-in-out"
 >
 	<div class="flex flex-row border-b">
 		<h1 class="text-center wrap-break-word">{data?.name}</h1>
 		<button
-			onclick={() => (visible = false)}
 			class="max-w-6 min-h-6 p-0 m-0 ml-auto flex items-center justify-center"
 			>X</button
 		>

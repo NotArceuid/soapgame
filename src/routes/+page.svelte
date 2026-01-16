@@ -7,7 +7,6 @@
 	import Cat from "./Pages/Cat/Cat.svelte";
 	import Achievements from "./Pages/Achievements/Achievements.svelte";
 	import CurrenciesPanel from "./Components/CurrenciesPanel.svelte";
-	import NotificationHandler from "./Components/NotificationHandler.svelte";
 	import NavBar from "./Components/NavBar.svelte";
 	import { isLoading } from "svelte-i18n";
 	import { MainPageHandler, PagesEnum } from "./Pages/Pages.svelte.ts";
@@ -15,6 +14,13 @@
 	import { SvelteMap } from "svelte/reactivity";
 	import Footer from "./Footer.svelte";
 	import MenuSettings from "./MenuSettings.svelte";
+	import { onMount } from "svelte";
+	import { type IAchievement } from "../Game/Achievements/Achievements.svelte.ts";
+	import NotificationHandler from "./Components/NotificationHandler.svelte";
+	import {
+		NotificationPopUp,
+		type INotification,
+	} from "./Components/Notification.svelte.ts";
 
 	MainLoop.start();
 
@@ -50,6 +56,13 @@
 
 	let gameEntered = $state(false);
 	let inMenuSettings = $state(false);
+
+	let notificationList: INotification[] = $state([]);
+	onMount(() => {
+		NotificationPopUp.add((notification: INotification) => {
+			notificationList.push(notification);
+		});
+	});
 </script>
 
 {#if !gameEntered}
@@ -118,7 +131,16 @@
 			</div>
 
 			<div class="absolute bottom-5 right-5">
-				<NotificationHandler />
+				{#each notificationList as notification}
+					<NotificationHandler
+						data={notification}
+						done={() => {
+							notificationList = notificationList.filter(
+								(a) => a.name !== notification.name,
+							);
+						}}
+					/>
+				{/each}
 			</div>
 
 			<Footer />

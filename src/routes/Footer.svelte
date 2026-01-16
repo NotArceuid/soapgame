@@ -28,7 +28,7 @@
 				<span>Discord</span>
 			</a>
 			<a
-				href="https://ko-fi.com/Y8Y21S39ZS"
+				href="https://www.patreon.com/c/NotArceuid_"
 				class="flex flex-row items-center gap-2"
 			>
 				<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { SaveSystem } from "../../Game/Saves.ts";
-	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 	import { Player } from "../../Game/Player.svelte.ts";
 	import {
@@ -10,25 +9,13 @@
 	} from "../../Game/Shared/BreakInfinity/Formatter.svelte.ts";
 	import SaveSlot from "./SaveSlot.svelte";
 	import { ColorTheme, Settings } from "./Settings.svelte.ts";
+	import { onMount } from "svelte";
+	import { OfflineProps } from "../../Game/Game.svelte.ts";
+	import { NotificationPopUp } from "../Components/Notification.svelte.ts";
 
-	let saveStatus = $state("");
-	async function SavePlayerData() {
-		saveStatus = $_("settings.saves.saving");
-		try {
-			await SaveSystem.exportToString();
-			saveStatus = $_("settings.saves.gamesaved");
-		} catch {
-			saveStatus = $_("settings.saves.savefailed");
-		}
-		setTimeout(() => (saveStatus = ""), 2000);
-	}
-
-	// No exception handling here, why? because i trust the LLM overlords!!
 	async function saveToClipboard() {
 		const saveString = await SaveSystem.exportToString();
 		await navigator.clipboard.writeText(saveString);
-		saveStatus = $_("settings.saves.savedtoclipboard");
-		setTimeout(() => (saveStatus = ""), 2000);
 	}
 
 	async function saveToFile() {
@@ -37,45 +24,12 @@
 			const blob = new Blob([saveString], { type: "text/plain" });
 			const a = document.createElement("a");
 			document.body.append(a);
-			a.download = "game_save.txt";
+			a.download = "ssg_save.txt";
 			a.href = URL.createObjectURL(blob);
 			a.click();
 			a.remove();
-
-			saveStatus = $_("settings.saves.gamesaved");
-		} catch {
-			saveStatus = $_("settings.saves.loadfailed");
-		}
-		setTimeout(() => (saveStatus = ""), 2000);
+		} catch {}
 	}
-
-	let autoSaveTimer: number | null = null;
-	let lastAutoSave = $state<Date | null>(null);
-
-	function startAutoSave() {
-		if (autoSaveTimer) {
-			clearInterval(autoSaveTimer);
-		}
-		autoSaveTimer = window.setInterval(async () => {
-			try {
-				SavePlayerData();
-				lastAutoSave = new Date();
-			} catch (error) {
-				console.warn($_("settings.saves.savefailed"), error);
-			}
-		}, 30000);
-	}
-
-	async function saveOnUnload() {
-		await SaveSystem.exportToString();
-	}
-
-	onMount(() => {
-		startAutoSave();
-
-		window.addEventListener("beforeunload", saveOnUnload);
-		window.addEventListener("pagehide", saveOnUnload);
-	});
 
 	//@ts-ignore
 	let name = PKG_NAME;
@@ -119,6 +73,16 @@
 		[ColorTheme.Light]: "light",
 		[ColorTheme.Dark]: "dark",
 	};
+
+	onMount(() => {
+		setInterval(async () => {
+			localStorage.setItem(
+				OfflineProps.saveId.toString(),
+				await SaveSystem.exportToString(),
+			);
+			NotificationPopUp.invoke({ name: "Saves", description: "Game Saved!" });
+		}, 300000);
+	});
 </script>
 
 <div class="w-full p-2 absolute h-full">
@@ -151,9 +115,7 @@
 				>
 				<button class="w-full" onclick={saveToFile}>Save to file</button>
 			</div>
-			<SaveSlot save={true} />
-			<SaveSlot save={true} />
-			<SaveSlot save={true} />
+			<SaveSlot save={true} idx="0" />
 		</div>
 	</div>
 </div>

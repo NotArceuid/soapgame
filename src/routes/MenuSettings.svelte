@@ -78,13 +78,6 @@
 			<p>{`${name} v${version}`}</p>
 			<h1>Time wasted: {formatTime(Player._player.Playtime)}</h1>
 		</div>
-
-		<div class="w-3/12 p-2 space-y-1">
-			<h1 class="text-center font-bold">Saves</h1>
-			<SaveSlot save={false} idx="0" />
-			<SaveSlot save={false} idx="1" />
-			<SaveSlot save={false} idx="2" />
-		</div>
 	</div>
 
 	<button class="absolute right-50" onclick={() => (open = false)}>Back</button>

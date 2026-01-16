@@ -1,14 +1,13 @@
 import { InvokeableEvent } from "../Shared/Events";
 import type { Decimal } from "../Shared/BreakInfinity/Decimal.svelte";
-
-export const UnlockAchievementEvent: InvokeableEvent<AchievementKey> = new InvokeableEvent<AchievementKey>();
+import { NotificationPopUp, type INotification } from "../../routes/Components/Notification.svelte";
 
 export function UnlockAchievement(key: AchievementKey) {
   if (AchievementsData[key].unlocked)
     return;
 
   AchievementsData[key].unlocked = true;
-  UnlockAchievementEvent.invoke(key);
+  NotificationPopUp.invoke(AchievementsData[key]);
 }
 
 export enum AchievementKey {
@@ -169,7 +168,7 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
   }
 });
 
-export interface IAchievement {
+export interface IAchievement extends INotification {
   name: string,
   description: string,
   check: (...props: Decimal[]) => boolean;

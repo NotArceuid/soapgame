@@ -4,26 +4,32 @@
 	import { SaveSystem } from "../../Game/Saves";
 	import { _ } from "svelte-i18n";
 	import { Player } from "../../Game/Player.svelte";
+	import { NotificationPopUp } from "../Components/Notification.svelte";
 
-	let { save, idx, saveStatus = $bindable() } = $props();
+	let { save, idx } = $props();
 	let isOpen = $state(false);
 	function slidedown() {
 		isOpen = !isOpen;
 	}
 
 	let text = $state("");
+	function LoadSuccess() {
+		NotificationPopUp.invoke({ name: "Saves", description: "Load Success!" });
+	}
+
+	function LoadFailed() {
+		NotificationPopUp.invoke({ name: "Saves", description: "Load Failed!" });
+	}
+
 	async function load() {
 		try {
 			if (text) {
-				const success = await SaveSystem.importFromString(text);
-				saveStatus = success
-					? $_("settings.saves.loadsave")
-					: $_("settings.saves.savefailed");
-			} else {
-				saveStatus = $_("settings.saves.emptyclipboard");
+				await SaveSystem.importFromString(text);
+				LoadSuccess();
 			}
-			setTimeout(() => (saveStatus = ""), 2000);
-		} catch {}
+		} catch {
+			LoadFailed();
+		}
 	}
 
 	function loadFromFile(event: Event) {
@@ -37,17 +43,19 @@
 				const content = e.target?.result as string;
 				if (content) {
 					const success = await SaveSystem.importFromString(content);
-					saveStatus = success
-						? $_("settings.saves.loadsave")
-						: $_("settings.saves.loadfailed");
+					LoadSuccess();
 				}
 			} catch {
-				saveStatus = $_("settings.saves.loadfailed");
+				LoadFailed();
 			}
-			setTimeout(() => (saveStatus = ""), 2000);
 		};
 		reader.readAsText(file);
 		input.value = "";
+	}
+
+	async function saveToLStorage() {
+		let save = await SaveSystem.exportToString();
+		localStorage.setItem(idx, save);
 	}
 </script>
 
@@ -55,7 +63,7 @@
 	<h1 class="text-left pb-2">{Player.Name}</h1>
 	<div class="flex flex-wrap flex-row gap-2 mb-2">
 		{#if save}
-			<button class="flex-1">Save</button>
+			<button onclick={saveToLStorage} class="flex-1">Save</button>
 		{/if}
 		<button class="flex-1" onclick={slidedown}>Load</button>
 	</div>

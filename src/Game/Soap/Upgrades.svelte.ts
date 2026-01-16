@@ -64,14 +64,14 @@ class RedSoapAutoSeller extends BaseUpgrade {
   maxCount = 9;
 
   get cost(): Decimal {
-    return new Decimal(this.count + 1).factorial().mul(10);
+    return new Decimal(this.count).factorial().mul(10);
   }
 
   getMax = () => {
     let count = 0;
     let tempCost = Decimal.ZERO;
     while (count < this.maxCount) {
-      let nextCost = new Decimal(count + 1).factorial().mul(10);
+      let nextCost = new Decimal(count).factorial().mul(10);
       tempCost = tempCost.add(nextCost)
       if (Player.Money.lessThan(tempCost)) break;
       count++;

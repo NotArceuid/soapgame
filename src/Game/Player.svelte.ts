@@ -1,7 +1,7 @@
 import { log } from "console";
 import { SaveSystem } from "./Saves.ts";
 import { Decimal } from "./Shared/BreakInfinity/Decimal.svelte";
-import { RunOfflineCalculations } from "./Game.svelte.ts";
+import { CalculateOfflineTick, RunOfflineCalculations } from "./Game.svelte.ts";
 
 interface IPlayer {
   Name: string;
@@ -79,7 +79,6 @@ class PlayerClass {
 
     SaveSystem.LoadCallback<IPlayerSaves>(this.saveKey, (data) => {
       this._player.Money = new Decimal(data.money);
-      log("savetime:" + data.savetime)
       this._player.SaveTime = data.savetime;
       this._player.Name = data.name
       this._player.Tickets = new Decimal(data.ticket);
@@ -91,9 +90,10 @@ class PlayerClass {
   }
 
   CalculateOfflineProgress() {
-    let timeDifference = new Date().getTime() - this._player.SaveTime
-    let offlineTick = Math.floor(timeDifference / 5000);
-    RunOfflineCalculations(offlineTick);
+    let time = 0
+    this._player.SaveTime === 0 ? time = 0 : time = this._player.SaveTime;
+    let realTime = CalculateOfflineTick(new Date().getTime() - time);
+    RunOfflineCalculations(realTime);
   }
 }
 

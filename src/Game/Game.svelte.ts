@@ -144,6 +144,7 @@ export const OfflineProps = $state({
   initialTick: 0,
   offlineTick: 0,
   calculating: false,
+  saveId: 0,
 })
 
 export function RunOfflineCalculations(tick: number) {
