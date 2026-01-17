@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CollapsibleCard } from "svelte5-collapsible";
-	import { fade, slide } from "svelte/transition";
+	import { slide } from "svelte/transition";
 	import { Player } from "../../Game/Player.svelte";
 	import { UpgradesData, UpgradesKey } from "../../Game/Soap/Upgrades.svelte";
 	import { DevHacks } from "../../Game/Game.svelte";
@@ -9,13 +9,12 @@
 		Soaps,
 		SoapType,
 	} from "../../Game/Soap/Soap.svelte";
-	import { log } from "console";
 	import {
 		AchievementKey,
 		AchievementsData,
 		UnlockAchievement,
 	} from "../../Game/Achievements/Achievements.svelte";
-	import { Clamp } from "../../Game/Shared/Math";
+	import ActionButton from "./ActionButton.svelte";
 
 	let maxBulkAmt = $derived(
 		UpgradesData[UpgradesKey.BulkUpgrade].count +
@@ -27,6 +26,21 @@
 		if (AchievementsData[AchievementKey.Millionaire].check(Player.Money))
 			UnlockAchievement(AchievementKey.Millionaire);
 	});
+
+	function SetMaxBulk(amount: number) {
+		Player.BulkAmount = amount;
+	}
+
+	let btns: boolean[] = $state([true, false, false, false]);
+	function SetButtonActive(id: number) {
+		for (let i = 0; i < btns.length; i++) {
+			btns[i] = false;
+		}
+
+		btns[id] = true;
+	}
+	let btnStyle =
+		"padding-left: 8px; padding-right: 8px; padding-top: 5px; padding-bottom: 5px;";
 </script>
 
 <div class="border-x h-full border-border">
@@ -55,16 +69,67 @@
 		<div class="w-full border-t p-3">
 			<div class="flex flex-row">
 				<h1 class="content-center">Bulk Limit:</h1>
-				<input
-					type="number"
-					max={maxBulkAmt}
-					min="1"
-					bind:value={
-						() => Player.BulkAmount,
-						(v) => (Player.BulkAmount = Clamp(v, 0, maxBulkAmt))
-					}
-					class="ml-3 w-12 border"
-				/>
+				<ActionButton
+					onclick={() => {
+						SetMaxBulk(1);
+						SetButtonActive(0);
+					}}
+					disabled={btns[0]}
+					customStyle={btnStyle}
+					>{#snippet content()}
+						1
+					{/snippet}</ActionButton
+				>
+				{#if UpgradesData[UpgradesKey.BulkUpgrade].count >= 5 || DevHacks.skipUnlock}
+					<ActionButton
+						onclick={() => {
+							SetMaxBulk(5);
+							SetButtonActive(1);
+						}}
+						disabled={btns[1]}
+						customStyle={btnStyle}
+						>{#snippet content()}
+							10
+						{/snippet}</ActionButton
+					>
+				{/if}
+				{#if UpgradesData[UpgradesKey.BulkUpgrade].count >= 9 || DevHacks.skipUnlock}
+					<ActionButton
+						onclick={() => {
+							SetMaxBulk(10);
+							SetButtonActive(2);
+						}}
+						disabled={btns[2]}
+						customStyle={btnStyle}
+						>{#snippet content()}
+							10
+						{/snippet}</ActionButton
+					>
+				{/if}
+				{#if UpgradesData[UpgradesKey.BulkUpgrade2].count >= 15 || DevHacks.skipUnlock}
+					<ActionButton
+						onclick={() => {
+							SetMaxBulk(25);
+							SetButtonActive(3);
+						}}
+						disabled={btns[3]}
+						customStyle={btnStyle}
+						>{#snippet content()}
+							25
+						{/snippet}</ActionButton
+					>
+				{/if}
+				<ActionButton
+					onclick={() => {
+						SetMaxBulk(maxBulkAmt);
+						SetButtonActive(3);
+					}}
+					disabled={btns[3]}
+					customStyle={btnStyle}
+					>{#snippet content()}
+						Max
+					{/snippet}</ActionButton
+				>
 			</div>
 		</div>
 	{/if}

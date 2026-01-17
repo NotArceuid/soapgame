@@ -355,7 +355,7 @@ class UnlockOrangeSoap extends BaseUpgrade {
   }
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.gt(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 
@@ -389,7 +389,7 @@ class OrangeSoapAutoSeller extends BaseUpgrade {
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
 
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 
@@ -416,7 +416,7 @@ class OrangeSoapAutoSellBonus extends BaseUpgrade {
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => UpgradesData[UpgradesKey.OrangeSoapAutoSeller].count > 0;
 
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 
@@ -443,7 +443,7 @@ class OrangeSoapAutoSellReduction extends BaseUpgrade {
     return new ReactiveText(`Cost Reduction: ${this.count}%`);
   }
 
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 class OrangeQualityAutobuy extends BaseUpgrade {
@@ -460,7 +460,7 @@ class OrangeQualityAutobuy extends BaseUpgrade {
     return new Decimal("2.5e+32")
   }
 
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 
@@ -477,7 +477,7 @@ class OrangeSpeedAutoBuy extends BaseUpgrade {
     return new Decimal("2.5e+32")
   }
 
-  buttonStyle = Soaps[SoapType.Orange].StyleColor;
+  buttonStyle = "bg-orange-300";
   invertText = true;
 }
 
