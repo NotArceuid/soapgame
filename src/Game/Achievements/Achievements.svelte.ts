@@ -1,6 +1,7 @@
 import { InvokeableEvent } from "../Shared/Events";
 import type { Decimal } from "../Shared/BreakInfinity/Decimal.svelte";
 import { NotificationPopUp, type INotification } from "../../routes/Components/Notification.svelte";
+import { log } from "console";
 
 export function UnlockAchievement(key: AchievementKey) {
   if (AchievementsData[key].unlocked)
@@ -173,4 +174,10 @@ export interface IAchievement extends INotification {
   description: string,
   check: (...props: Decimal[]) => boolean;
   unlocked?: boolean
+}
+
+export function UnlockedAchievementCount(): number {
+  return Object.values(AchievementsData)
+    .filter(data => data.unlocked)
+    .length;
 }

@@ -16,6 +16,7 @@
 		AchievementsData,
 		UnlockAchievement,
 	} from "../../../Game/Achievements/Achievements.svelte.ts";
+	import { SaveSystem } from "../../../Game/Saves.ts";
 
 	let {
 		type,
@@ -179,6 +180,21 @@
 	});
 
 	let canShowUpgrades = $state(false);
+	// svelte-ignore state_referenced_locally
+	let saveKey = `${soap.Type} + producer`;
+	interface SaveProps {
+		showupgrades: boolean;
+	}
+
+	SaveSystem.SaveCallback<SaveProps>(saveKey, () => {
+		return {
+			showupgrades: canShowUpgrades,
+		};
+	});
+
+	SaveSystem.LoadCallback<SaveProps>(saveKey, (data) => {
+		data.showupgrades = canShowUpgrades;
+	});
 </script>
 
 {#if unlocked}

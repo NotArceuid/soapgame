@@ -3,6 +3,7 @@ import { Decimal } from "../Shared/BreakInfinity/Decimal.svelte";
 import { SaveSystem } from "../Saves";
 import { ReactiveText } from "../Shared/ReactiveText.svelte";
 import { log } from "console";
+import { AchievementKey, AchievementsData, UnlockedAchievementCount } from "../Achievements/Achievements.svelte";
 
 export abstract class SoapBase implements ISoapData {
   abstract Type: SoapType;
@@ -24,7 +25,8 @@ export abstract class SoapBase implements ISoapData {
 
   public Sell(amount: Decimal, red?: Decimal) {
     let eatMult = Soaps[SoapType.Red]?.EatAmount!.div("5e12").add(Decimal.ONE);
-    let mult = this.SellPrice.mul(eatMult);
+    let sellMult = (UnlockedAchievementCount() * 0.01) + 1;
+    let mult = this.SellPrice.mul(eatMult).mul(sellMult)
 
     Player.Money = Player.Money.add(amount.mul(mult!));
     this.Amount = this.Amount.minus(amount.minus(red ?? 0));
