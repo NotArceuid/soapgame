@@ -43,6 +43,7 @@ export enum AchievementKey {
   HighSpeed,
   Accelerate,
   Deccelerate2,
+  BulkedUp,
   EatSoap,
   Deccelerate3,
   Deccelerate4,
@@ -136,6 +137,12 @@ export const AchievementsData: Record<AchievementKey, IAchievement> = $state({
     description: "You've passed deccelerate 2, now be prepare for the wall",
     check: (...props) => props[0].gt(1)
   },
+  [AchievementKey.BulkedUp]: {
+    name: "Bulked Up",
+    description: "Max out the first bulk upgrade",
+    check: (...props) => props[0].eq(9)
+  },
+
   [AchievementKey.EatSoap]: {
     name: "Eat Red Soap",
     description: "Fyi: there is a wall here [[][][]]",

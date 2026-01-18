@@ -216,8 +216,18 @@ export function formatTime(seconds: number): string {
   for (const unit of units) {
     if (remaining >= unit.sec) {
       const count = Math.floor(remaining / unit.sec);
+      remaining %= unit.sec;
+
+      const mins = Math.floor(remaining / 60);
       const secs = remaining % 60;
-      return `${count}${unit.abbr} ${secs.toString().padStart(2, '0')}s`;
+
+      const secsStr = secs.toString().padStart(2, '0');
+
+      if (mins > 0) {
+        return `${count}${unit.abbr} ${mins}m ${secsStr}s`;
+      } else {
+        return `${count}${unit.abbr} ${secsStr}s`;
+      }
     }
   }
 
@@ -225,4 +235,3 @@ export function formatTime(seconds: number): string {
   const secs = seconds % 60;
   return `${mins}m ${secs.toString().padStart(2, '0')}s`;
 }
-

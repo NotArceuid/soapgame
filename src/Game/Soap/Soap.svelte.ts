@@ -19,6 +19,7 @@ export abstract class SoapBase implements ISoapData {
   abstract SellPrice: Decimal;
   abstract StyleColor: string;
   abstract DeccelReqBase: Decimal;
+  abstract DeccelSpeedScaling: Decimal;
 
   Amount: Decimal = $state(Decimal.ZERO);
   EatAmount: Decimal = $state(Decimal.ZERO);
@@ -42,10 +43,11 @@ export abstract class SoapBase implements ISoapData {
 
 class RedSoap extends SoapBase {
   EatMessage = () => {
-    return new ReactiveText(`Sell multiplier: ${(this.EatAmount.div("5e12").format())}x`)
+    return new ReactiveText(`Sell multiplier: ${(this.EatAmount.div("1e12").format())}x`)
   }
   SellPrice: Decimal = Decimal.ONE;
   DeccelerateBase: Decimal = new Decimal(100);
+  DeccelSpeedScaling: Decimal = new Decimal(95);
   DeccelReqBase: Decimal = new Decimal(1000);
   SpeedCostBase: Decimal = new Decimal(7.29);
   SpeedDivisor: Decimal = Decimal.ONE;
@@ -53,7 +55,7 @@ class RedSoap extends SoapBase {
   QualityDivisor: Decimal = Decimal.ONE;
   Type = $state(SoapType.Red);
   MaxProgress = $state(new Decimal(100));
-  EatReq = new Decimal("2.5e+14");
+  EatReq = new Decimal("1e+12");
   Unlocked = true;
   StyleColor: string = "border-red-400";
 }
@@ -65,6 +67,7 @@ class OrangeSoap extends SoapBase {
 
   SellPrice: Decimal = new Decimal(5e15);
   DeccelerateBase: Decimal = new Decimal(1000);
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   DeccelReqBase: Decimal = new Decimal(1000);
   Type = SoapType.Orange;
   MaxProgress = new Decimal(500);
@@ -82,6 +85,7 @@ class YellowSoap extends SoapBase {
   }
 
   SellPrice: Decimal = new Decimal(1e18);
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   DeccelerateBase: Decimal = new Decimal(100);
   Type = SoapType.Yellow;
   DeccelReqBase: Decimal = new Decimal(1000);
@@ -100,6 +104,7 @@ class GreenSoap extends SoapBase {
   }
 
   SellPrice: Decimal = new Decimal(1e18);
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   DeccelerateBase: Decimal = new Decimal(1000);
   Type = SoapType.Green;
   MaxProgress = new Decimal(100_000_000);
@@ -118,6 +123,7 @@ class BlueSoap extends SoapBase {
   }
   DeccelerateBase: Decimal = new Decimal(10000);
 
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   SellPrice: Decimal = new Decimal(1e18);
   Type = SoapType.Blue;
   MaxProgress = new Decimal(100);
@@ -135,6 +141,7 @@ class IndigoSoap extends SoapBase {
     return new ReactiveText(``);
   }
   DeccelerateBase: Decimal = new Decimal(100_000);
+  DeccelSpeedScaling: Decimal = new Decimal(500);
 
   SellPrice: Decimal = new Decimal(1e18);
   Type = SoapType.Indigo;
@@ -153,6 +160,7 @@ class VioletSoap extends SoapBase {
     return new ReactiveText(``);
   }
 
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   DeccelerateBase: Decimal = new Decimal(1_000_000);
   SellPrice: Decimal = new Decimal(1e18);
 
@@ -171,6 +179,7 @@ class WhiteSoap extends SoapBase {
   Type = SoapType.White;
   MaxProgress = new Decimal(100);
 
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   DeccelerateBase: Decimal = new Decimal(10_000_000);
   SellPrice: Decimal = new Decimal(1e18);
   EatMessage = () => {
@@ -192,6 +201,7 @@ class BlackSoap extends SoapBase {
     return new ReactiveText(``);
   }
   SellPrice: Decimal = new Decimal(1e18);
+  DeccelSpeedScaling: Decimal = new Decimal(500);
 
   DeccelerateBase: Decimal = new Decimal(100_000_000);
 
@@ -209,6 +219,7 @@ class BlackSoap extends SoapBase {
 
 class RainbowSoap extends SoapBase {
   Type = SoapType.Rainbow;
+  DeccelSpeedScaling: Decimal = new Decimal(500);
   EatMessage = () => {
     return new ReactiveText(``);
   }

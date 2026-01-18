@@ -6,6 +6,7 @@ import { SaveSystem } from "../../../Game/Saves";
 import { ResetUpgrades, UpgradesData, UpgradesKey } from "../../../Game/Soap/Upgrades.svelte";
 import { AchievementKey, AchievementsData, UnlockAchievement } from "../../../Game/Achievements/Achievements.svelte";
 import { ChargeMilestones } from "../Foundry/Foundry.svelte.ts";
+import { log } from "console";
 
 export class SoapProducer {
   public SoapType: SoapType;
@@ -38,22 +39,22 @@ export class SoapProducer {
     return this.QualityFormula.Integrate(this.QualityCount, this.QualityCount + amount);
   }
 
-  getQualityLevelBonus() {
+  get QualityLevelBonus() {
     switch (this.SoapType) {
       case SoapType.Red:
-        return UpgradesData[UpgradesKey.RedSpeedLevelBonus].count;
+        return UpgradesData[UpgradesKey.RedQualityLevelBonus].count + 1;
       case SoapType.Orange:
-        return UpgradesData[UpgradesKey.OrangeSpeedLevelBonus].count;
+        return UpgradesData[UpgradesKey.OrangeQualityLevelBonus].count + 1;
       default:
         return 1;
     }
   }
-  getSpeedLevelBonus() {
+  get SpeedLevelBonus() {
     switch (this.SoapType) {
       case SoapType.Red:
-        return UpgradesData[UpgradesKey.RedQualityLevelBonus].count;
+        return UpgradesData[UpgradesKey.RedSpeedLevelBonus].count + 1;
       case SoapType.Orange:
-        return UpgradesData[UpgradesKey.OrangeQualityLevelBonus].count;
+        return UpgradesData[UpgradesKey.OrangeSpeedLevelBonus].count + 1;
       default:
         return 1;
     }
@@ -62,7 +63,7 @@ export class SoapProducer {
   get Quality() {
     let upgCount = UpgradesData[UpgradesKey.QualityUpgrade].count;
     let amt = Decimal.ONE
-      .mul((1 + this.QualityCount) * Math.pow(this.getQualityLevelBonus(), Math.floor(this.QualityCount / 25))).div(3) // Multi from upgrade
+      .mul((1 + this.QualityCount) * Math.pow(1 + (this.QualityLevelBonus / 100), Math.floor(this.QualityCount / 25))).div(3) // Multi from upgrade
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount) / 25))
       .mul(this.DecelerateCount > 0 ? this.Soap.DeccelerateBase.mul(Decimal.pow(4, this.DecelerateCount + 1)) : 1) // mult from decel
       .mul(ChargeMilestones.get(0)!.formula().add(1))
@@ -72,9 +73,10 @@ export class SoapProducer {
   }
 
   get Speed() {
+    //log((1 + this.SpeedCount) * Math.pow(1 + (this.getSpeedLevelBonus() / 100), Math.floor(this.SpeedCount / 25))) // Multi from upgrade 
     let upgCount = UpgradesData[UpgradesKey.SpeedUpgrade].count;
     let amt = Decimal.ONE
-      .mul((1 + this.SpeedCount) * Math.pow(this.getSpeedLevelBonus(), Math.floor(this.SpeedCount / 25))) // Multi from upgrade 
+      .mul((1 + this.SpeedCount) * Math.pow(1 + (this.SpeedLevelBonus / 100), Math.floor(this.SpeedCount / 25))) // Multi from upgrade 
       .mul(((upgCount) + 1) * Math.pow(2, Math.floor(upgCount / 25)))
       .div(this.DecelerateCount !== 0 ? this.DecelerateCount * 5 : 1) // nerfs from decel
       .mul(ChargeMilestones.get(1)!.formula().add(1))
@@ -91,7 +93,7 @@ export class SoapProducer {
     return this.Soap.DeccelReqBase.mul(this.DecelerateCount + 1).mul(new Decimal(10).pow(this.DecelerateCount));
   }
   get MaxProgress() {
-    return this.Soap.MaxProgress.mul(new Decimal(1000).pow(this.DecelerateCount));
+    return this.Soap.MaxProgress.mul(this.Soap.DeccelSpeedScaling.pow(this.DecelerateCount));
   }
   get Amount() {
     return this.Soap.Amount;

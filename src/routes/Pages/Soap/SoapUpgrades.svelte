@@ -66,6 +66,12 @@
 			)
 		)
 			UnlockAchievement(AchievementKey.Maxxed);
+		if (
+			AchievementsData[AchievementKey.BulkedUp].check(
+				new Decimal(UpgradesData[UpgradesKey.BulkUpgrade].count),
+			)
+		)
+			UnlockAchievement(AchievementKey.BulkedUp);
 	});
 </script>
 

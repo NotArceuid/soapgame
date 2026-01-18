@@ -188,7 +188,7 @@ class RedSpeedLevelBonus extends BaseUpgrade {
   description = () => new ReactiveText("Grants a 1% bonus to red soap producer speed at every 25 levels increments of speed upgrade you own. Increases by 1% every level. ");
   maxCount = 50;
 
-  private costFormula = new ExpPolynomial(new Decimal("9.7e9"), new Decimal(1.3));
+  private costFormula = new ExpPolynomial(new Decimal("1.68e9"), new Decimal(1.15));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -199,7 +199,7 @@ class RedSpeedLevelBonus extends BaseUpgrade {
   }
 
   effect = () => {
-    return new ReactiveText(`Speed Bonus: ${Math.floor(this.count / 25)}%`);
+    return new ReactiveText(`Speed Bonus: ${this.count}%`);
   }
 
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
@@ -213,7 +213,7 @@ class RedQualityLevelBonus extends BaseUpgrade {
   description = () => new ReactiveText("Same as the speed upgrade one but for quality xd");
   maxCount = 50;
 
-  private costFormula = new ExpPolynomial(new Decimal("9.7e9"), new Decimal(1.3));
+  private costFormula = new ExpPolynomial(new Decimal("1.68e9"), new Decimal(1.15));
   get cost(): Decimal {
     return this.costFormula.Integrate(this.count, this.count + this.buyAmount).round();
   }
@@ -224,7 +224,7 @@ class RedQualityLevelBonus extends BaseUpgrade {
   }
 
   effect = () => {
-    return new ReactiveText(`Quality Bonus: ${Math.floor(this.count / 25)}%`);
+    return new ReactiveText(`Quality Bonus: ${this.count}%`);
   }
 
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
@@ -296,7 +296,7 @@ class EatRedSoapUpgrade extends BaseUpgrade {
   description = () => new ReactiveText("Why would you do that?");
   maxCount = 1;
   get cost() {
-    return new Decimal("2.5e+13");
+    return new Decimal("5e+12");
   }
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.gt(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => true;
@@ -359,13 +359,13 @@ class BulkUpgrade2 extends BaseUpgrade {
   get cost(): Decimal {
     let amt = Decimal.ZERO;
     for (let i = 0; i < this.buyAmount; i++) {
-      amt = amt.add(new Decimal("2.5e+25").mul(new Decimal(10).pow(UpgradesData[UpgradesKey.BulkUpgrade].count! + i)))
+      amt = amt.add(new Decimal("2.5e+9").mul(new Decimal(10).pow(UpgradesData[UpgradesKey.BulkUpgrade].count! + i)))
     }
     return amt;
   }
   getMax = () => {
     let count = 0;
-    let tempCost = new Decimal("2.5e+25");
+    let tempCost = new Decimal("2.5e+9");
     let currentCount = UpgradesData[UpgradesKey.BulkUpgrade].count || 0;
 
     while (count < this.maxCount) {
@@ -549,7 +549,7 @@ class OrangeSpeedLevelBonus extends BaseUpgrade {
   }
 
   effect = () => {
-    return new ReactiveText(`Speed Bonus: ${Math.floor(this.count / 25)}%`);
+    return new ReactiveText(`Speed Bonus: ${this.count}%`);
   }
 
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
@@ -576,7 +576,7 @@ class OrangeQualityLevelBOnus extends BaseUpgrade {
   }
 
   effect = () => {
-    return new ReactiveText(`Quality Bonus: ${Math.floor(this.count / 25)}%`);
+    return new ReactiveText(`Quality Bonus: ${this.count}%`);
   }
 
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.greaterThan(this.cost)] as [() => ReactiveText, () => boolean];
