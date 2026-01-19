@@ -12,6 +12,7 @@
 	import { onMount } from "svelte";
 	import { OfflineProps } from "../../Game/Game.svelte.ts";
 	import { NotificationPopUp } from "../Components/Notification.svelte.ts";
+	import { asset, base } from "$app/paths";
 
 	async function saveToClipboard() {
 		const saveString = await SaveSystem.exportToString();
@@ -83,7 +84,7 @@
 
 		document.querySelectorAll("button").forEach((button) => {
 			button.addEventListener("click", () => {
-				const audio = new Audio("/click.wav");
+				const audio = new Audio(asset(`/click.wav`));
 				if (Settings.Sounds) audio.play();
 			});
 		});

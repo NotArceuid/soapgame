@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { asset } from "$app/paths";
 	import { Settings, ColorTheme } from "../Settings.svelte.ts";
 </script>
 
@@ -41,10 +42,12 @@
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<img
-				src={`/fatcat-${Settings.Theme == ColorTheme.Dark ? "dark" : "light"}.png`}
+				src={asset(
+					`/fatcat-${Settings.Theme == ColorTheme.Dark ? "dark" : "light"}.png`,
+				)}
 				alt="dumbcat"
 				onclick={() => {
-					const audio = new Audio("/meow.wav");
+					const audio = new Audio(asset("/meow.wav"));
 					audio.play();
 				}}
 			/>
