@@ -15,6 +15,7 @@
 </script>
 
 <svelte:head>
+	<title>Soap Game</title>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
