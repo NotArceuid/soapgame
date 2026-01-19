@@ -3,22 +3,19 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      fallback: 'index.html',
       pages: 'build',
       assets: 'build',
+      fallback: '404.html',
       precompress: false,
-      strict: false
+      strict: true
     }),
     paths: {
-      base: process.env.NODE_ENV === 'production' ? '/soap-game' : '',
-      relative: false
-    },
-    appDir: '_app'
-  }
+      base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+    }
+  },
+  preprocess: vitePreprocess(),
 };
-
 
 export default config;

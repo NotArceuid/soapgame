@@ -11,7 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
        - name: Install pnpm
          uses: pnpm/action-setup@v3
          with:
@@ -31,6 +30,9 @@ jobs:
  BASE_PATH: '/${{ github.event.repository.name }}'
         run: |
  pnpm run build
+
+      - name: Add .nojekyll file
+        run: touch build/.nojekyll
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
