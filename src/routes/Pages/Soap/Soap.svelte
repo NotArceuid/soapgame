@@ -81,7 +81,6 @@
 				Foundry
 			</button>
 		{/if}
-		<div class="ml-auto"></div>
 	</div>
 	<div
 		id="soap-pages"

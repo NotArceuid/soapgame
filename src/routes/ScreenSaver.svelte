@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { ColorTheme, Settings } from "./Pages/Settings.svelte.ts";
+
 	interface Props {
 		active?: boolean;
 		speed?: number;
@@ -119,7 +121,7 @@
 
 <div bind:this={container} class="w-full h-full relative overflow-hidden">
 	<img
-		src="/fatcat.png"
+		src={`/fatcat-${Settings.Theme == ColorTheme.Dark ? "dark" : "light"}.png`}
 		alt="DVD Logo"
 		class="absolute"
 		style="width: {logoSize}px; height: {logoSize}px; left: {x}px; top: {y}px;"

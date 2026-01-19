@@ -628,7 +628,7 @@ class CatUpgrade extends BaseUpgrade {
   description = () => new ReactiveText("Quite an expensive kitten");
   maxCount = 1;
   get cost() {
-    return new Decimal("2.5e+43");
+    return new Decimal("2.5e+48");
   }
   Requirements = [() => new ReactiveText(this.cost.format()), () => Player.Money.gt(this.cost)] as [() => ReactiveText, () => boolean];
   ShowCondition = () => Player.Charge.gt(1000);

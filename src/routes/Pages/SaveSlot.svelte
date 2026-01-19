@@ -5,6 +5,7 @@
 	import { _ } from "svelte-i18n";
 	import { Player } from "../../Game/Player.svelte";
 	import { NotificationPopUp } from "../Components/Notification.svelte";
+	import NotificationHandler from "../Components/NotificationHandler.svelte";
 
 	let { save, idx } = $props();
 	let isOpen = $state(false);
@@ -56,6 +57,7 @@
 	async function saveToLStorage() {
 		let save = await SaveSystem.exportToString();
 		localStorage.setItem(idx, save);
+		NotificationPopUp.invoke({ name: "Saves", description: "Game Saved!" });
 	}
 </script>
 
